@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>NationShield | Политический РП сервер 1.21+</title>
     <style>
-        /* ---------- ТЁМНЫЙ СТИЛЬ В ДУХЕ DISCORD + ПИКСЕЛЬНЫЙ ШРИФТ, БЕЗ СМАЙЛИКОВ ---------- */
+        /* ---------- ТЁМНЫЙ СТИЛЬ В ДУХЕ DISCORD + ПИКСЕЛЬНЫЙ ШРИФТ ---------- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* ПИКСЕЛЬНЫЙ ШРИФТ MINECRAFT */
         @font-face {
             font-family: 'MinecraftPixel';
             src: url('https://raw.githubusercontent.com/JonathonF/MinecraftFont/master/Minecraftia-Regular.ttf') format('truetype');
@@ -319,6 +318,42 @@
             100% { opacity: 1; transform: scale(1.2); }
         }
 
+        /* БЛОК СО СПИСКОМ ИГРОКОВ */
+        .players-list {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #2b2d31;
+            text-align: left;
+        }
+        .players-title {
+            font-size: 0.65rem;
+            color: #e0b354;
+            margin-bottom: 8px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .players-names {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        .player-name {
+            background: #0e0f10;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: #b5bac1;
+            border: 1px solid #3b3f48;
+            font-family: 'MinecraftPixel', monospace;
+        }
+        .no-players {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #6d737c;
+            padding: 8px;
+        }
+
         .discord-action-btn {
             display: inline-flex;
             align-items: center;
@@ -426,6 +461,10 @@
             .monitor-status {
                 font-size: 1rem;
             }
+            .player-name {
+                font-size: 0.6rem;
+                padding: 3px 8px;
+            }
         }
     </style>
 </head>
@@ -471,7 +510,7 @@
                     </div>
                 </div>
 
-                <!-- ВИДЖЕТ МОНИТОРИНГА СЕРВЕРА (РАБОТАЕТ В РФ) -->
+                <!-- ВИДЖЕТ МОНИТОРИНГА СЕРВЕРА + СПИСОК ИГРОКОВ -->
                 <div class="monitor-widget" id="serverMonitor">
                     <div class="monitor-label">СТАТУС СЕРВЕРА</div>
                     <div class="monitor-status" id="monitorStatus">
@@ -482,6 +521,12 @@
                         ЗАГРУЗКА ДАННЫХ...
                     </div>
                     <div class="monitor-version" id="monitorVersion"></div>
+                    
+                    <!-- БЛОК ДЛЯ СПИСКА ИГРОКОВ -->
+                    <div class="players-list" id="playersList" style="display: none;">
+                        <div class="players-title">ИГРОКИ ОНЛАЙН</div>
+                        <div class="players-names" id="playersNames"></div>
+                    </div>
                 </div>
 
                 <div style="text-align: center; font-size: 0.7rem; margin-top: 6px; color: #9ea3ac; font-family: 'MinecraftPixel', monospace;">
@@ -582,18 +627,18 @@
         ipElement.title = 'Нажмите, чтобы скопировать IP';
     }
     
-    // ========== МОНИТОРИНГ СЕРВЕРА (РАБОТАЕТ В РФ) ==========
-    // Используем несколько API для надёжности
+    // ========== МОНИТОРИНГ СЕРВЕРА + СПИСОК ИГРОКОВ ==========
     
     async function fetchServerStatus() {
         const statusDiv = document.getElementById('monitorStatus');
         const playersDiv = document.getElementById('monitorPlayers');
         const versionDiv = document.getElementById('monitorVersion');
+        const playersListBlock = document.getElementById('playersList');
+        const playersNamesDiv = document.getElementById('playersNames');
         
-        // Список API для проверки (некоторые могут быть заблокированы, другие работают)
+        // API, которые могут отдавать список игроков (если сервер поддерживает)
         const apis = [
             `https://api.mcsrvstat.us/2/${serverAddress}`,
-            `https://mcapi.us/server/status?ip=${serverAddress}`,
             `https://api.mcstatus.io/v2/status/java/${serverAddress}`
         ];
         
@@ -602,7 +647,7 @@
         for (const apiUrl of apis) {
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 секунд таймаут
+                const timeoutId = setTimeout(() => controller.abort(), 6000);
                 
                 const response = await fetch(apiUrl, { signal: controller.signal });
                 clearTimeout(timeoutId);
@@ -611,28 +656,28 @@
                 
                 const data = await response.json();
                 
-                // Проверяем разные форматы ответов от разных API
                 let online = false;
                 let players = { online: 0, max: 0 };
                 let version = '';
+                let playerList = [];
                 
-                // Формат mcsrvstat.us
+                // Формат mcsrvstat.us (иногда отдаёт список)
                 if (data.online !== undefined) {
                     online = data.online;
                     players = { online: data.players?.online || 0, max: data.players?.max || 0 };
                     version = data.version || '';
+                    if (data.players?.list && Array.isArray(data.players.list)) {
+                        playerList = data.players.list;
+                    }
                 }
-                // Формат mcapi.us
-                else if (data.online !== undefined && data.server) {
+                // Формат mcstatus.io (может отдавать список)
+                else if (data.online !== undefined && data.players) {
                     online = data.online;
-                    players = { online: data.players?.now || 0, max: data.players?.max || 0 };
-                    version = data.server?.version || '';
-                }
-                // Формат mcstatus.io
-                else if (data.online !== undefined) {
-                    online = data.online;
-                    players = { online: data.players?.online || 0, max: data.players?.max || 0 };
+                    players = { online: data.players.online || 0, max: data.players.max || 0 };
                     version = data.version?.name_clean || '';
+                    if (data.players.list && Array.isArray(data.players.list)) {
+                        playerList = data.players.list.map(p => p.name_clean || p);
+                    }
                 }
                 
                 if (online) {
@@ -646,11 +691,28 @@
                     } else {
                         versionDiv.innerHTML = '';
                     }
+                    
+                    // Отображаем список игроков, если есть
+                    if (playerList.length > 0) {
+                        playersListBlock.style.display = 'block';
+                        playersNamesDiv.innerHTML = '';
+                        playerList.forEach(playerName => {
+                            const nameSpan = document.createElement('span');
+                            nameSpan.className = 'player-name';
+                            nameSpan.textContent = playerName;
+                            playersNamesDiv.appendChild(nameSpan);
+                        });
+                    } else if (players.online > 0) {
+                        // Сервер онлайн, но API не отдал список (не поддерживается)
+                        playersListBlock.style.display = 'block';
+                        playersNamesDiv.innerHTML = '<div class="no-players">СПИСОК ИГРОКОВ НЕ ДОСТУПЕН</div>';
+                    } else {
+                        playersListBlock.style.display = 'block';
+                        playersNamesDiv.innerHTML = '<div class="no-players">НИКОГО НЕТ ОНЛАЙН</div>';
+                    }
+                    
                     success = true;
                     break;
-                } else {
-                    // Если сервер оффлайн по этому API, но может быть онлайн по другому
-                    continue;
                 }
             } catch (error) {
                 console.log(`API ${apiUrl} не ответил:`, error);
@@ -659,7 +721,7 @@
         }
         
         if (!success) {
-            // Пробуем последний вариант - через прокси (если API заблокированы)
+            // Пробуем через прокси
             try {
                 const proxyUrl = `https://api.allorigins.win/raw?url=https://api.mcsrvstat.us/2/${serverAddress}`;
                 const response = await fetch(proxyUrl);
@@ -672,10 +734,28 @@
                     `;
                     playersDiv.innerHTML = `ИГРОКОВ ОНЛАЙН: ${data.players?.online || 0} ИЗ ${data.players?.max || 0}`;
                     versionDiv.innerHTML = data.version ? `ВЕРСИЯ: ${data.version}` : '';
+                    
+                    const playerList = data.players?.list || [];
+                    if (playerList.length > 0) {
+                        playersListBlock.style.display = 'block';
+                        playersNamesDiv.innerHTML = '';
+                        playerList.forEach(playerName => {
+                            const nameSpan = document.createElement('span');
+                            nameSpan.className = 'player-name';
+                            nameSpan.textContent = playerName;
+                            playersNamesDiv.appendChild(nameSpan);
+                        });
+                    } else if (data.players?.online > 0) {
+                        playersListBlock.style.display = 'block';
+                        playersNamesDiv.innerHTML = '<div class="no-players">СПИСОК ИГРОКОВ НЕ ДОСТУПЕН</div>';
+                    } else {
+                        playersListBlock.style.display = 'block';
+                        playersNamesDiv.innerHTML = '<div class="no-players">НИКОГО НЕТ ОНЛАЙН</div>';
+                    }
                     success = true;
                 }
             } catch (e) {
-                console.log('Прокси тоже не сработал');
+                console.log('Прокси не сработал');
             }
         }
         
@@ -685,13 +765,14 @@
                 <span style="color: #ff9800;">НЕ УДАЛОСЬ ПРОВЕРИТЬ</span>
             `;
             playersDiv.innerHTML = 'ПРОВЕРЬТЕ ПОДКЛЮЧЕНИЕ К ИНТЕРНЕТУ';
-            versionDiv.innerHTML = 'ВОЗМОЖНО, API ВРЕМЕННО НЕДОСТУПНЫ';
+            versionDiv.innerHTML = '';
+            playersListBlock.style.display = 'none';
         }
     }
     
     // Запускаем мониторинг
     fetchServerStatus();
-    setInterval(fetchServerStatus, 45000); // Обновляем каждые 45 секунд
+    setInterval(fetchServerStatus, 45000);
     
     const discordBtn = document.getElementById('discordInviteBtn');
     if (discordBtn) {
