@@ -40,7 +40,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* ФОН: яркость увеличена */
         body::before {
             content: "";
             position: fixed;
@@ -57,7 +56,6 @@
             z-index: -2;
         }
 
-        /* Лёгкая затемняющая накладка */
         body::after {
             content: "";
             position: fixed;
@@ -70,7 +68,6 @@
             pointer-events: none;
         }
 
-        /* ОСНОВНОЙ КОНТЕЙНЕР */
         .discord-card {
             max-width: 1000px;
             width: 100%;
@@ -85,7 +82,6 @@
             padding: 2rem 2rem 2rem 2rem;
         }
 
-        /* ЛОГО В ЛЕВОМ УГЛУ */
         .corner-logo {
             position: fixed;
             top: 20px;
@@ -106,7 +102,6 @@
             border-color: #7983f5;
         }
 
-        /* ЗАГОЛОВОК — БЕЗ СМАЙЛИКОВ, СЛОВО ВЫДЕЛЯЕТСЯ */
         .site-header {
             text-align: center;
             margin-bottom: 1.5rem;
@@ -140,7 +135,6 @@
             opacity: 0.9;
         }
 
-        /* ВКЛАДКИ */
         .discord-tabs {
             display: flex;
             gap: 0.25rem;
@@ -174,7 +168,6 @@
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
-        /* КОНТЕНТ */
         .content-panel {
             background: #111214;
             border-radius: 16px;
@@ -194,7 +187,6 @@
             to { opacity: 1; transform: translateY(0);}
         }
 
-        /* ОПИСАНИЕ СЕРВЕРА */
         .server-desc {
             background: #1e1f22;
             border-left: 4px solid #e0b354;
@@ -207,7 +199,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* БЛОК АДРЕСА */
         .address-dark-card {
             background: #1a1b1e;
             border-radius: 16px;
@@ -267,7 +258,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* КАСТОМНЫЙ ВИДЖЕТ МОНИТОРИНГА — стили */
+        /* ВИДЖЕТ МОНИТОРИНГА */
         .monitor-widget {
             background: #1a1b1e;
             border-radius: 16px;
@@ -328,7 +319,6 @@
             100% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* КНОПКА DISCORD */
         .discord-action-btn {
             display: inline-flex;
             align-items: center;
@@ -359,7 +349,6 @@
             margin: 1rem 0 0.5rem;
         }
 
-        /* ПРАВИЛА */
         .rules-placeholder-dark {
             text-align: center;
             padding: 2rem 1rem;
@@ -370,7 +359,6 @@
             font-family: 'MinecraftPixel', monospace;
         }
 
-        /* ФУТЕР */
         .footer-dark {
             text-align: center;
             margin-top: 1.5rem;
@@ -382,7 +370,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* ТОСТ-УВЕДОМЛЕНИЕ */
         .discord-toast {
             position: fixed;
             bottom: 2rem;
@@ -402,7 +389,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* АДАПТИВНОСТЬ */
         @media (max-width: 650px) {
             body {
                 padding: 0.8rem;
@@ -445,7 +431,6 @@
 </head>
 <body>
 
-<!-- ЛОГОТИП В ЛЕВОМ УГЛУ -->
 <img src="https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/photo_2026-04-22_15-48-48.jpg" 
      alt="NationShield" 
      class="corner-logo"
@@ -486,7 +471,7 @@
                     </div>
                 </div>
 
-                <!-- КАСТОМНЫЙ ВИДЖЕТ МОНИТОРИНГА СЕРВЕРА -->
+                <!-- ВИДЖЕТ МОНИТОРИНГА СЕРВЕРА (РАБОТАЕТ В РФ) -->
                 <div class="monitor-widget" id="serverMonitor">
                     <div class="monitor-label">СТАТУС СЕРВЕРА</div>
                     <div class="monitor-status" id="monitorStatus">
@@ -496,9 +481,7 @@
                     <div class="monitor-players" id="monitorPlayers">
                         ЗАГРУЗКА ДАННЫХ...
                     </div>
-                    <div class="monitor-version" id="monitorVersion">
-                        
-                    </div>
+                    <div class="monitor-version" id="monitorVersion"></div>
                 </div>
 
                 <div style="text-align: center; font-size: 0.7rem; margin-top: 6px; color: #9ea3ac; font-family: 'MinecraftPixel', monospace;">
@@ -551,7 +534,7 @@
         });
     });
 
-    // КОПИРОВАНИЕ АДРЕСА ПРИ КЛИКЕ
+    // КОПИРОВАНИЕ АДРЕСА
     const serverAddress = "Nationshield.play-creative.com";
     const ipElement = document.getElementById('clickableIp');
     
@@ -599,53 +582,116 @@
         ipElement.title = 'Нажмите, чтобы скопировать IP';
     }
     
-    // КАСТОМНЫЙ ВИДЖЕТ МОНИТОРИНГА (mcsrvstat.us)
+    // ========== МОНИТОРИНГ СЕРВЕРА (РАБОТАЕТ В РФ) ==========
+    // Используем несколько API для надёжности
+    
     async function fetchServerStatus() {
         const statusDiv = document.getElementById('monitorStatus');
         const playersDiv = document.getElementById('monitorPlayers');
         const versionDiv = document.getElementById('monitorVersion');
         
-        try {
-            const response = await fetch('https://api.mcsrvstat.us/2/Nationshield.play-creative.com');
-            const data = await response.json();
-            
-            if (data.online) {
-                // Сервер онлайн
-                statusDiv.innerHTML = `
-                    <span class="online-dot"></span>
-                    <span style="color: #4caf50;">СЕРВЕР РАБОТАЕТ</span>
-                `;
-                playersDiv.innerHTML = `ИГРОКОВ ОНЛАЙН: ${data.players.online} ИЗ ${data.players.max}`;
-                if (data.version) {
-                    versionDiv.innerHTML = `ВЕРСИЯ: ${data.version}`;
-                } else {
-                    versionDiv.innerHTML = '';
+        // Список API для проверки (некоторые могут быть заблокированы, другие работают)
+        const apis = [
+            `https://api.mcsrvstat.us/2/${serverAddress}`,
+            `https://mcapi.us/server/status?ip=${serverAddress}`,
+            `https://api.mcstatus.io/v2/status/java/${serverAddress}`
+        ];
+        
+        let success = false;
+        
+        for (const apiUrl of apis) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 секунд таймаут
+                
+                const response = await fetch(apiUrl, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) continue;
+                
+                const data = await response.json();
+                
+                // Проверяем разные форматы ответов от разных API
+                let online = false;
+                let players = { online: 0, max: 0 };
+                let version = '';
+                
+                // Формат mcsrvstat.us
+                if (data.online !== undefined) {
+                    online = data.online;
+                    players = { online: data.players?.online || 0, max: data.players?.max || 0 };
+                    version = data.version || '';
                 }
-            } else {
-                // Сервер оффлайн
-                statusDiv.innerHTML = `
-                    <span class="offline-dot"></span>
-                    <span style="color: #f44336;">СЕРВЕР НЕ ДОСТУПЕН</span>
-                `;
-                playersDiv.innerHTML = 'СЕРВЕР ВЫКЛЮЧЕН ИЛИ НЕ ОТВЕЧАЕТ';
-                versionDiv.innerHTML = 'ПРОВЕРЬТЕ, ЗАПУЩЕН ЛИ СЕРВЕР';
+                // Формат mcapi.us
+                else if (data.online !== undefined && data.server) {
+                    online = data.online;
+                    players = { online: data.players?.now || 0, max: data.players?.max || 0 };
+                    version = data.server?.version || '';
+                }
+                // Формат mcstatus.io
+                else if (data.online !== undefined) {
+                    online = data.online;
+                    players = { online: data.players?.online || 0, max: data.players?.max || 0 };
+                    version = data.version?.name_clean || '';
+                }
+                
+                if (online) {
+                    statusDiv.innerHTML = `
+                        <span class="online-dot"></span>
+                        <span style="color: #4caf50;">СЕРВЕР РАБОТАЕТ</span>
+                    `;
+                    playersDiv.innerHTML = `ИГРОКОВ ОНЛАЙН: ${players.online} ИЗ ${players.max}`;
+                    if (version) {
+                        versionDiv.innerHTML = `ВЕРСИЯ: ${version}`;
+                    } else {
+                        versionDiv.innerHTML = '';
+                    }
+                    success = true;
+                    break;
+                } else {
+                    // Если сервер оффлайн по этому API, но может быть онлайн по другому
+                    continue;
+                }
+            } catch (error) {
+                console.log(`API ${apiUrl} не ответил:`, error);
+                continue;
             }
-        } catch (error) {
-            // Ошибка при запросе
+        }
+        
+        if (!success) {
+            // Пробуем последний вариант - через прокси (если API заблокированы)
+            try {
+                const proxyUrl = `https://api.allorigins.win/raw?url=https://api.mcsrvstat.us/2/${serverAddress}`;
+                const response = await fetch(proxyUrl);
+                const data = await response.json();
+                
+                if (data && data.online === true) {
+                    statusDiv.innerHTML = `
+                        <span class="online-dot"></span>
+                        <span style="color: #4caf50;">СЕРВЕР РАБОТАЕТ</span>
+                    `;
+                    playersDiv.innerHTML = `ИГРОКОВ ОНЛАЙН: ${data.players?.online || 0} ИЗ ${data.players?.max || 0}`;
+                    versionDiv.innerHTML = data.version ? `ВЕРСИЯ: ${data.version}` : '';
+                    success = true;
+                }
+            } catch (e) {
+                console.log('Прокси тоже не сработал');
+            }
+        }
+        
+        if (!success) {
             statusDiv.innerHTML = `
                 <span class="offline-dot"></span>
-                <span style="color: #ff9800;">ОШИБКА ПРОВЕРКИ</span>
+                <span style="color: #ff9800;">НЕ УДАЛОСЬ ПРОВЕРИТЬ</span>
             `;
-            playersDiv.innerHTML = 'НЕ УДАЛОСЬ ПОЛУЧИТЬ СТАТУС СЕРВЕРА';
-            versionDiv.innerHTML = 'ПОПРОБУЙТЕ ОБНОВИТЬ СТРАНИЦУ ПОЗЖЕ';
-            console.error('Ошибка при запросе к API:', error);
+            playersDiv.innerHTML = 'ПРОВЕРЬТЕ ПОДКЛЮЧЕНИЕ К ИНТЕРНЕТУ';
+            versionDiv.innerHTML = 'ВОЗМОЖНО, API ВРЕМЕННО НЕДОСТУПНЫ';
         }
     }
     
-    // Запускаем мониторинг сразу при загрузке страницы
+    // Запускаем мониторинг
     fetchServerStatus();
-    // Обновляем статус каждые 30 секунд
-    setInterval(fetchServerStatus, 30000);
+    setInterval(fetchServerStatus, 45000); // Обновляем каждые 45 секунд
     
     const discordBtn = document.getElementById('discordInviteBtn');
     if (discordBtn) {
