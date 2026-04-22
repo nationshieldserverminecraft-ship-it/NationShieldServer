@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>NationShield | Политический РП сервер 1.21+</title>
     <style>
-        /* ---------- СТИЛЬ ПОД ФОТОГРАФИЮ (МИНИМАЛИЗМ + АТМОСФЕРА) ---------- */
+        /* ---------- СТИЛЬ С ФОНОВЫМ ИЗОБРАЖЕНИЕМ И ЗАТЕМНЕНИЕМ ---------- */
         * {
             margin: 0;
             padding: 0;
@@ -22,8 +22,9 @@
             font-display: swap;
         }
 
+        /* --- ФОН: КАРТИНКА ИЗ РЕПОЗИТОРИЯ + ЗАТЕМНЕНИЕ --- */
         body {
-            background: #0a0c0e;  /* Тёмный, почти черный фон, чтобы фото выделялось */
+            background: #0a0c0e;  /* запасной цвет */
             font-family: 'Minecraft', 'Courier New', 'Consolas', monospace;
             color: #e8e6e0;
             min-height: 100vh;
@@ -31,21 +32,51 @@
             position: relative;
         }
 
-        /* Основной контейнер — сдвинут вниз, чтобы не перекрывать фото */
+        /* Псевдоэлемент для фоновой картинки с затемнением */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/1683182731_fonzon-club-p-mainkraft-krasivo-45.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            filter: brightness(0.35) contrast(1.1);  /* Затемнение + небольшой контраст */
+            z-index: -2;
+        }
+
+        /* Дополнительная тёмная накладка для читаемости текста (ещё больше затемнения) */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: -1;
+        }
+
+        /* Основной контейнер — сдвинут вниз, чтобы не перекрывать фото в углу */
         .main-content {
             max-width: 860px;
             width: 100%;
             margin-left: auto;
             margin-right: auto;
             margin-top: 100px;      /* Отступ сверху, чтобы контент был под фото */
-            background: rgba(18, 20, 22, 0.85);
-            backdrop-filter: blur(2px);
-            border: 1px solid rgba(200, 180, 120, 0.3);
+            background: rgba(18, 20, 22, 0.82);
+            backdrop-filter: blur(3px);
+            border: 1px solid rgba(200, 180, 120, 0.4);
             padding: 2rem;
             transition: all 0.2s ease;
+            border-radius: 2px;
         }
 
-        /* ФОТО В ЛЕВОМ ВЕРХНЕМ УГЛУ */
+        /* ФОТО В ЛЕВОМ ВЕРХНЕМ УГЛУ (лого) */
         .corner-image {
             position: fixed;
             top: 20px;
@@ -55,7 +86,7 @@
             height: auto;
             border-radius: 4px;
             border: 2px solid #c8a86b;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
             transition: transform 0.2s;
             cursor: pointer;
         }
@@ -87,7 +118,7 @@
             font-weight: normal;
             letter-spacing: 2px;
             color: #e0b354;
-            text-shadow: 0 0 2px #1f1a0a;
+            text-shadow: 0 0 4px #1f1a0a;
             margin-bottom: 0.75rem;
             border-bottom: 1px solid #c8a86b;
             display: inline-block;
@@ -132,7 +163,7 @@
 
         /* Контент */
         .tab-content {
-            background: rgba(12, 14, 16, 0.7);
+            background: rgba(12, 14, 16, 0.65);
             padding: 1.8rem;
             margin: 0.5rem 0 1.8rem;
             border-left: 2px solid #c8a86b;
@@ -155,15 +186,16 @@
             padding-left: 1rem;
         }
 
-        /* Блок адреса */
+        /* Блок адреса (без отдельной кнопки) */
         .address-block {
-            background: rgba(8, 10, 12, 0.8);
+            background: rgba(8, 10, 12, 0.75);
             padding: 1.5rem;
             text-align: center;
             margin: 1.2rem 0;
             border: 1px solid #c8a86b;
         }
 
+        /* Адрес теперь кликабельный, курсор-рука */
         .server-ip {
             font-family: 'Minecraft', monospace;
             font-size: 1.8rem;
@@ -175,19 +207,30 @@
             letter-spacing: 1px;
             word-break: break-all;
             border: 1px solid #c8a86b;
+            cursor: pointer;
+            transition: all 0.1s;
+            user-select: none;
+        }
+        .server-ip:hover {
+            background: #1a1e1c;
+            border-color: #e0b354;
+            transform: scale(1.01);
+        }
+        .server-ip:active {
+            transform: scale(0.99);
         }
 
         .version-badge {
             margin-top: 1rem;
             font-size: 0.8rem;
             color: #b8b494;
-            background: rgba(26, 28, 30, 0.9);
+            background: rgba(26, 28, 30, 0.85);
             display: inline-block;
             padding: 0.2rem 0.8rem;
             font-family: monospace;
         }
 
-        /* Кнопки в стиле "под старину" */
+        /* Кнопка Discord (остаётся) */
         .minimal-btn {
             display: inline-block;
             background: #1f211f;
@@ -195,7 +238,7 @@
             font-family: 'Minecraft', monospace;
             font-size: 0.9rem;
             padding: 0.6rem 1.8rem;
-            margin-top: 1.2rem;
+            margin-top: 0.5rem;
             color: #e0b354;
             text-transform: uppercase;
             cursor: pointer;
@@ -226,7 +269,7 @@
             padding-top: 1rem;
             border-top: 1px solid #c8a86b;
             font-size: 0.7rem;
-            color: #9e9a82;
+            color: #c2bea2;
             font-family: monospace;
         }
 
@@ -260,6 +303,7 @@
             z-index: 999;
             white-space: nowrap;
             backdrop-filter: blur(4px);
+            border-radius: 2px;
         }
         @media (max-width: 600px) {
             .toast-notify {
@@ -278,7 +322,7 @@
 </head>
 <body>
 
-<!-- ИЗОБРАЖЕНИЕ В ЛЕВОМ ВЕРХНЕМ УГЛУ (прямая ссылка raw) -->
+<!-- ИЗОБРАЖЕНИЕ В ЛЕВОМ ВЕРХНЕМ УГЛУ (лого) -->
 <img src="https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/photo_2026-04-22_15-48-48.jpg" 
      alt="NationShield emblem" 
      class="corner-image"
@@ -304,16 +348,18 @@
 
             <div class="address-block">
                 <div style="margin-bottom: 12px; font-size: 0.8rem; letter-spacing: 1px; color: #c8a86b;">⚡ АКТУАЛЬНЫЙ IP ⚡</div>
+                <!-- Адрес теперь кликабелен, кнопка удалена -->
                 <div class="server-ip" id="serverIpDisplay">
                     Nationshield.play-creative.com
                 </div>
-                <button class="minimal-btn" id="copyIpBtn">📋 Скопировать адрес</button>
                 <div class="version-badge">
                     🧪 Java Edition 1.21+
                 </div>
+                <div style="font-size: 0.7rem; margin-top: 12px; color: #b8b494;">
+                    Нажми на адрес, чтобы скопировать
+                </div>
             </div>
-            <!-- Текст-акцент под стать фото -->
-            <div style="text-align: center; font-size: 0.75rem; margin-top: 8px; color: #b8b494;">
+            <div style="text-align: center; font-size: 0.75rem; margin-top: 4px; color: #c2be9a;">
                 Власть, дипломатия, интриги. Твой след в истории.
             </div>
         </div>
@@ -364,11 +410,12 @@
         });
     });
 
-    // ---------- КОПИРОВАНИЕ IP ----------
+    // ---------- КОПИРОВАНИЕ IP ПРИ КЛИКЕ НА САМ АДРЕС (БЕЗ ОТДЕЛЬНОЙ КНОПКИ) ----------
     const serverIp = "Nationshield.play-creative.com";
-    const copyBtn = document.getElementById('copyIpBtn');
+    const ipElement = document.getElementById('serverIpDisplay');
     
     function showMessage(msg) {
+        // Удаляем предыдущее уведомление, если есть
         const oldToast = document.querySelector('.toast-notify');
         if (oldToast) oldToast.remove();
         
@@ -387,9 +434,11 @@
         try {
             await navigator.clipboard.writeText(serverIp);
             showMessage(`✅ Скопировано: ${serverIp}`);
-            copyBtn.style.transform = 'translateY(1px)';
-            setTimeout(() => { copyBtn.style.transform = ''; }, 120);
+            // Визуальный фидбек на элементе
+            ipElement.style.transform = 'scale(0.98)';
+            setTimeout(() => { ipElement.style.transform = ''; }, 120);
         } catch (err) {
+            // fallback для старых браузеров
             const textarea = document.createElement('textarea');
             textarea.value = serverIp;
             document.body.appendChild(textarea);
@@ -397,17 +446,16 @@
             document.execCommand('copy');
             document.body.removeChild(textarea);
             showMessage(`📋 Адрес скопирован: ${serverIp}`);
+            ipElement.style.transform = 'scale(0.98)';
+            setTimeout(() => { ipElement.style.transform = ''; }, 120);
         }
     }
     
-    copyBtn.addEventListener('click', copyAddress);
-    
-    // Клик по IP тоже копирует
-    const ipElement = document.getElementById('serverIpDisplay');
+    // Вешаем обработчик клика на адрес
     if (ipElement) {
-        ipElement.style.cursor = 'pointer';
-        ipElement.title = 'Нажмите, чтобы скопировать';
         ipElement.addEventListener('click', copyAddress);
+        ipElement.style.cursor = 'pointer';
+        ipElement.title = 'Нажмите, чтобы скопировать адрес сервера';
     }
     
     // Discord кнопка с эффектом
@@ -419,8 +467,9 @@
         });
     }
     
-    // Убеждаемся, что фото отображается (raw-ссылка)
-    console.log("Сайт обновлён: фото в левом углу, стиль адаптирован");
+    // Убеждаемся, что фоновое изображение загружается корректно (через raw)
+    // Также затемнение уже применено через body::before и body::after
+    console.log("Сайт обновлён: новый фон с затемнением, адрес копируется по клику, кнопка убрана");
 </script>
 </body>
 </html>
