@@ -668,48 +668,45 @@
 </div>
 
 <!-- СКРЫТАЯ ВЕРСИЯ -->
-<div class="version-hidden" id="versionText">v.2.2.0</div>
+<div class="version-hidden" id="versionText">v.2.2.1</div>
 
 <script>
-    // ========== ЗВУКИ ==========
-    // Создаём аудиоэлементы (они будут загружены, но не воспроизведены до клика)
+    // ========== ЗВУКИ (ПРЯМЫЕ ССЫЛКИ ЧЕРЕЗ RAW) ==========
     const soundClick = new Audio('https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/off-button-on-table-lamp.mp3');
     const soundLogo = new Audio('https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/nos-freddi.mp3');
     
-    // Предзагрузка звуков (чтобы они сразу были готовы)
+    // Предзагрузка звуков
     soundClick.preload = 'auto';
     soundLogo.preload = 'auto';
     
-    // Флаг для разблокировки звука (первое взаимодействие)
+    // Флаг для разблокировки звука (браузеры блокируют авто-воспроизведение)
     let audioUnlocked = false;
     
-    // Функция разблокировки звука (нужна из-за политики браузеров)
+    // Функция разблокировки звука (первое взаимодействие с сайтом)
     function unlockAudio() {
         if (audioUnlocked) return;
         
-        // Создаём тихий "пустышку" для разблокировки
+        // Пытаемся воспроизвести тихий звук для разблокировки
         const silentTest = new Audio();
         silentTest.play().then(() => {
             silentTest.pause();
             audioUnlocked = true;
             console.log('Аудио разблокировано');
-        }).catch(e => console.log('Авто-разблокировка не сработала, ждём клика'));
+        }).catch(e => console.log('Ожидание клика для разблокировки звука'));
         
-        // Удаляем обработчик после первого клика по странице
+        // Удаляем обработчик после первого клика
         document.removeEventListener('click', unlockAudio);
         document.removeEventListener('touchstart', unlockAudio);
     }
     
-    // Ждём первого клика или касания пользователя для разблокировки звука
+    // Ждём первого клика или касания пользователя
     document.addEventListener('click', unlockAudio);
     document.addEventListener('touchstart', unlockAudio);
     
     // Функция безопасного воспроизведения звука
     function playSound(sound) {
         if (!audioUnlocked) {
-            // Если звук ещё не разблокирован, пробуем разблокировать сейчас
             unlockAudio();
-            // Не воспроизводим звук в этот раз, так как браузер может заблокировать
             return;
         }
         
@@ -723,14 +720,13 @@
         }
     }
     
-    // ========== НАВЕШИВАЕМ ЗВУКИ НА КНОПКИ ==========
+    // ========== НАВЕШИВАЕМ ЗВУКИ НА ВСЕ КНОПКИ ==========
     
-    // 1. Логотип в левом углу (специальный звук nos-freddi)
+    // 1. Логотип в левом углу (специальный звук)
     const logoElement = document.getElementById('soundLogo');
     if (logoElement) {
         logoElement.addEventListener('click', (e) => {
             playSound(soundLogo);
-            // Не блокируем другие действия (например, переход по ссылке, если она есть)
         });
     }
     
