@@ -5,20 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>NationShield | Политический РП сервер 1.21+</title>
     <style>
-        /* ---------- ТЁМНЫЙ СТИЛЬ В ДУХЕ DISCORD (С АКЦЕНТАМИ MINECRAFT) ---------- */
+        /* ---------- ТЁМНЫЙ СТИЛЬ В ДУХЕ DISCORD + ПИКСЕЛЬНЫЙ ШРИФТ, БЕЗ СМАЙЛИКОВ ---------- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Шрифт: основной — как в Discord (интерфейсный), но с майнкрафт-акцентами */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+        /* ПИКСЕЛЬНЫЙ ШРИФТ MINECRAFT */
+        @font-face {
+            font-family: 'MinecraftPixel';
+            src: url('https://raw.githubusercontent.com/JonathonF/MinecraftFont/master/Minecraftia-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
 
         @font-face {
-            font-family: 'Minecraft';
-            src: url('https://cdn.jsdelivr.net/npm/minecraft-font@1.0.0/minecraft.woff2') format('woff2'),
-                 url('https://cdn.jsdelivr.net/npm/minecraft-font@1.0.0/minecraft.woff') format('woff');
+            font-family: 'MinecraftPixel';
+            src: url('https://cdn.jsdelivr.net/npm/minecraft-font@1.0.0/minecraft.woff2') format('woff2');
             font-weight: normal;
             font-style: normal;
             font-display: swap;
@@ -26,14 +31,16 @@
 
         body {
             background-color: #0e0f10;
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'MinecraftPixel', 'Courier New', 'VT323', monospace;
             color: #e1e7f0;
             min-height: 100vh;
             padding: 1.5rem;
             position: relative;
+            font-size: 16px;
+            letter-spacing: 0.5px;
         }
 
-        /* Фон: изображение из репозитория + мощное затемнение (как в Discord) */
+        /* ФОН: яркость увеличена */
         body::before {
             content: "";
             position: fixed;
@@ -46,11 +53,11 @@
             background-position: center center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            filter: brightness(0.2) contrast(1.1);
+            filter: brightness(0.55) contrast(1.1);
             z-index: -2;
         }
 
-        /* Дополнительная тёмная градиентная накладка (как оверлей Discord) */
+        /* Лёгкая затемняющая накладка */
         body::after {
             content: "";
             position: fixed;
@@ -58,12 +65,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.75) 0%, rgba(15, 15, 20, 0.85) 100%);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(10, 10, 15, 0.5) 100%);
             z-index: -1;
             pointer-events: none;
         }
 
-        /* ---------- ОСНОВНОЙ КОНТЕЙНЕР (КАРТОЧКА В СТИЛЕ DISCORD) ---------- */
+        /* ОСНОВНОЙ КОНТЕЙНЕР */
         .discord-card {
             max-width: 1000px;
             width: 100%;
@@ -72,22 +79,20 @@
             border-radius: 16px;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
             overflow: hidden;
-            transition: all 0.2s ease;
         }
 
-        /* Внутренний отступ */
         .card-content {
             padding: 2rem 2rem 2rem 2rem;
         }
 
-        /* ЛОГО В ЛЕВОМ ВЕРХНЕМ УГЛУ (круглое, стиль Discord) */
+        /* ЛОГО В ЛЕВОМ УГЛУ */
         .corner-logo {
             position: fixed;
             top: 20px;
             left: 20px;
             z-index: 1000;
-            width: 56px;
-            height: 56px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             border: 2px solid #5865f2;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -101,7 +106,7 @@
             border-color: #7983f5;
         }
 
-        /* Заголовок сайта (кириллица + акцент) */
+        /* ЗАГОЛОВОК — БЕЗ СМАЙЛИКОВ, СЛОВО ВЫДЕЛЯЕТСЯ */
         .site-header {
             text-align: center;
             margin-bottom: 1.5rem;
@@ -109,25 +114,33 @@
             padding-bottom: 1rem;
         }
         .site-title {
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: -0.3px;
-            background: linear-gradient(135deg, #e1e7f0 0%, #b5bac1 100%);
+            font-size: 3rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #ffffff 0%, #e0b354 40%, #f5a623 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 8px rgba(88, 101, 242, 0.2);
-            font-family: 'Minecraft', 'Inter', monospace;
+            text-shadow: 0 0 12px rgba(224, 179, 84, 0.5);
+            font-family: 'MinecraftPixel', monospace;
             text-transform: uppercase;
+            display: inline-block;
+            padding: 0 0.5rem;
+        }
+        .site-title:hover {
+            text-shadow: 0 0 18px rgba(224, 179, 84, 0.8);
+            transition: text-shadow 0.2s ease;
         }
         .sub-badge {
-            font-size: 0.75rem;
-            color: #949ba4;
-            margin-top: 6px;
-            letter-spacing: 0.5px;
+            font-size: 0.7rem;
+            color: #c9a54b;
+            margin-top: 8px;
+            letter-spacing: 2px;
+            font-family: 'MinecraftPixel', monospace;
+            opacity: 0.9;
         }
 
-        /* ВКЛАДКИ (как в Discord) */
+        /* ВКЛАДКИ */
         .discord-tabs {
             display: flex;
             gap: 0.25rem;
@@ -140,15 +153,16 @@
             background: transparent;
             border: none;
             padding: 0.6rem 1.2rem;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 0.95rem;
+            font-family: 'MinecraftPixel', monospace;
+            font-weight: normal;
+            font-size: 0.9rem;
             color: #dbdee1;
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.15s;
             flex: 1;
             text-align: center;
+            letter-spacing: 0.5px;
         }
         .tab-btn:hover {
             background: #2b2d31;
@@ -156,11 +170,11 @@
         }
         .tab-btn.active {
             background: #2b2d31;
-            color: #ffffff;
+            color: #e0b354;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
-        /* КОНТЕНТ (как блоки в Discord) */
+        /* КОНТЕНТ */
         .content-panel {
             background: #111214;
             border-radius: 16px;
@@ -180,19 +194,20 @@
             to { opacity: 1; transform: translateY(0);}
         }
 
-        /* Описание сервера */
+        /* ОПИСАНИЕ СЕРВЕРА */
         .server-desc {
             background: #1e1f22;
-            border-left: 4px solid #5865f2;
+            border-left: 4px solid #e0b354;
             padding: 0.8rem 1rem;
             margin-bottom: 1.8rem;
             border-radius: 8px;
-            font-weight: 500;
             font-size: 1rem;
-            color: #cbd2d9;
+            color: #e1e7f0;
+            font-family: 'MinecraftPixel', monospace;
+            letter-spacing: 0.5px;
         }
 
-        /* Блок адреса — тёмный карточка */
+        /* БЛОК АДРЕСА */
         .address-dark-card {
             background: #1a1b1e;
             border-radius: 16px;
@@ -202,33 +217,32 @@
             border: 1px solid #2b2d31;
         }
         .ip-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 600;
-            color: #5865f2;
+            letter-spacing: 2px;
+            font-weight: normal;
+            color: #e0b354;
             margin-bottom: 12px;
+            font-family: 'MinecraftPixel', monospace;
         }
-        /* Кликабельный адрес */
         .server-ip-clickable {
-            font-family: 'Minecraft', 'Courier New', monospace;
-            font-size: 1.8rem;
-            font-weight: 500;
+            font-family: 'MinecraftPixel', monospace;
+            font-size: 1.6rem;
+            font-weight: normal;
             background: #0e0f10;
             display: inline-block;
             padding: 0.6rem 1.4rem;
             border-radius: 40px;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             color: #e1e7f0;
             border: 1px solid #3b3f48;
             cursor: pointer;
             transition: all 0.15s;
-            backdrop-filter: blur(4px);
         }
         .server-ip-clickable:hover {
             background: #2b2d31;
-            border-color: #5865f2;
-            color: white;
+            border-color: #e0b354;
+            color: #e0b354;
             transform: scale(1.01);
         }
         .server-ip-clickable:active {
@@ -236,13 +250,21 @@
         }
         .version-tag {
             margin-top: 1rem;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             background: #1e1f22;
             display: inline-block;
             padding: 0.2rem 1rem;
             border-radius: 30px;
             color: #949ba4;
-            font-weight: 500;
+            font-family: 'MinecraftPixel', monospace;
+            letter-spacing: 0.5px;
+        }
+        .copy-hint {
+            font-size: 0.6rem;
+            margin-top: 12px;
+            color: #6d737c;
+            font-family: 'MinecraftPixel', monospace;
+            letter-spacing: 0.5px;
         }
 
         /* КАСТОМНЫЙ ВИДЖЕТ МОНИТОРИНГА — стили */
@@ -256,31 +278,34 @@
             transition: all 0.2s ease;
         }
         .monitor-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            font-weight: 600;
-            color: #5865f2;
+            font-weight: normal;
+            color: #e0b354;
             margin-bottom: 10px;
+            font-family: 'MinecraftPixel', monospace;
         }
         .monitor-status {
-            font-size: 1.4rem;
-            font-weight: 600;
+            font-size: 1.2rem;
             margin: 8px 0;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            font-family: 'MinecraftPixel', monospace;
         }
         .monitor-players {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #b5bac1;
             margin: 5px 0;
+            font-family: 'MinecraftPixel', monospace;
         }
         .monitor-version {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #6d737c;
             margin-top: 8px;
+            font-family: 'MinecraftPixel', monospace;
         }
         .online-dot {
             display: inline-block;
@@ -303,16 +328,16 @@
             100% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* Кнопка Discord (в стиле Discord) */
+        /* КНОПКА DISCORD */
         .discord-action-btn {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             background: #5865f2;
             border: none;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 0.95rem;
+            font-family: 'MinecraftPixel', monospace;
+            font-weight: normal;
+            font-size: 0.9rem;
             padding: 0.7rem 1.8rem;
             margin-top: 0.5rem;
             color: white;
@@ -320,7 +345,7 @@
             cursor: pointer;
             transition: 0.15s;
             text-decoration: none;
-            letter-spacing: 0.3px;
+            letter-spacing: 1px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         .discord-action-btn:hover {
@@ -334,7 +359,7 @@
             margin: 1rem 0 0.5rem;
         }
 
-        /* Правила (пустые, но в стиле Discord) */
+        /* ПРАВИЛА */
         .rules-placeholder-dark {
             text-align: center;
             padding: 2rem 1rem;
@@ -342,58 +367,55 @@
             border-radius: 16px;
             color: #b5bac1;
             border: 1px dashed #3b3f48;
-        }
-        .rules-placeholder-dark span {
-            display: block;
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+            font-family: 'MinecraftPixel', monospace;
         }
 
-        /* Футер */
+        /* ФУТЕР */
         .footer-dark {
             text-align: center;
             margin-top: 1.5rem;
             padding-top: 1rem;
             border-top: 1px solid #2b2d31;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #6d737c;
-            font-weight: 500;
+            font-family: 'MinecraftPixel', monospace;
+            letter-spacing: 0.5px;
         }
 
-        /* Тост-уведомление (как в Discord) */
+        /* ТОСТ-УВЕДОМЛЕНИЕ */
         .discord-toast {
             position: fixed;
             bottom: 2rem;
             left: 50%;
             transform: translateX(-50%);
             background: #1e1f22;
-            border: 1px solid #3b3f48;
+            border: 1px solid #e0b354;
             border-radius: 40px;
             padding: 0.6rem 1.6rem;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #e1e7f0;
+            font-family: 'MinecraftPixel', monospace;
+            font-size: 0.8rem;
+            color: #e0b354;
             z-index: 999;
             backdrop-filter: blur(8px);
             box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
             white-space: nowrap;
+            letter-spacing: 0.5px;
         }
 
-        /* Адаптивность */
+        /* АДАПТИВНОСТЬ */
         @media (max-width: 650px) {
             body {
                 padding: 0.8rem;
             }
             .discord-card {
-                margin-top: 80px;
+                margin-top: 90px;
             }
             .card-content {
                 padding: 1.2rem;
             }
             .corner-logo {
-                width: 44px;
-                height: 44px;
+                width: 55px;
+                height: 55px;
                 top: 12px;
                 left: 12px;
             }
@@ -403,7 +425,8 @@
                 word-break: break-all;
             }
             .site-title {
-                font-size: 1.6rem;
+                font-size: 2rem;
+                letter-spacing: 2px;
             }
             .discord-toast {
                 white-space: normal;
@@ -412,17 +435,17 @@
             }
             .tab-btn {
                 padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
             .monitor-status {
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
         }
     </style>
 </head>
 <body>
 
-<!-- ЛОГОТИП В ЛЕВОМ УГЛУ (стиль Discord) -->
+<!-- ЛОГОТИП В ЛЕВОМ УГЛУ -->
 <img src="https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/photo_2026-04-22_15-48-48.jpg" 
      alt="NationShield" 
      class="corner-logo"
@@ -430,40 +453,36 @@
 
 <div class="discord-card">
     <div class="card-content">
-        <!-- Шапка -->
         <div class="site-header">
             <div class="site-title">
-                ⚔ NATIONSHIELD ⚔
+                NATIONSHIELD
             </div>
             <div class="sub-badge">
                 ПОЛИТИЧЕСКАЯ РОЛЕВАЯ ИГРА
             </div>
         </div>
 
-        <!-- Вкладки в стиле Discord -->
         <div class="discord-tabs">
             <button class="tab-btn active" data-tab="main">Главная</button>
             <button class="tab-btn" data-tab="rules">Правила</button>
         </div>
 
         <div class="content-panel">
-            <!-- Вкладка Главная -->
             <div id="main" class="tab-pane active-pane">
                 <div class="server-desc">
-                    ▸ РП политический сервер Minecraft
+                    РП политический сервер Minecraft
                 </div>
 
                 <div class="address-dark-card">
                     <div class="ip-label">АКТУАЛЬНЫЙ АДРЕС</div>
-                    <!-- Адрес кликабельный, кнопки копирования нет -->
                     <div class="server-ip-clickable" id="clickableIp">
                         Nationshield.play-creative.com
                     </div>
                     <div class="version-tag">
                         Java Edition 1.21+
                     </div>
-                    <div style="font-size: 0.65rem; margin-top: 12px; color: #6d737c;">
-                        Нажми на адрес, чтобы скопировать
+                    <div class="copy-hint">
+                        НАЖМИ НА АДРЕС, ЧТОБЫ СКОПИРОВАТЬ
                     </div>
                 </div>
 
@@ -475,24 +494,22 @@
                         <span>ПРОВЕРКА...</span>
                     </div>
                     <div class="monitor-players" id="monitorPlayers">
-                        Загрузка данных...
+                        ЗАГРУЗКА ДАННЫХ...
                     </div>
                     <div class="monitor-version" id="monitorVersion">
                         
                     </div>
                 </div>
 
-                <div style="text-align: center; font-size: 0.75rem; margin-top: 6px; color: #9ea3ac;">
+                <div style="text-align: center; font-size: 0.7rem; margin-top: 6px; color: #9ea3ac; font-family: 'MinecraftPixel', monospace;">
                     Власть, дипломатия, интриги. Твой след в истории.
                 </div>
             </div>
 
-            <!-- Вкладка Правила (пока пустые) -->
             <div id="rules" class="tab-pane">
                 <div class="rules-placeholder-dark">
-                    <span>📜</span>
                     Правила сервера в разработке<br>
-                    <span style="font-size: 0.8rem; display: block; margin-top: 10px;">Следите за обновлениями в Discord</span>
+                    <span style="font-size: 0.7rem; display: block; margin-top: 10px;">Следите за обновлениями в Discord</span>
                 </div>
             </div>
         </div>
@@ -504,13 +521,13 @@
         </div>
 
         <div class="footer-dark">
-            NATIONSHIELD • ПОЛИТИЧЕСКАЯ РП • 1.21+
+            NATIONSHIELD  ПОЛИТИЧЕСКАЯ РП  1.21+
         </div>
     </div>
 </div>
 
 <script>
-    // ---------- УПРАВЛЕНИЕ ВКЛАДКАМИ ----------
+    // УПРАВЛЕНИЕ ВКЛАДКАМИ
     const tabBtns = document.querySelectorAll('.tab-btn');
     const panes = document.querySelectorAll('.tab-pane');
 
@@ -534,7 +551,7 @@
         });
     });
 
-    // ---------- КОПИРОВАНИЕ АДРЕСА ПРИ КЛИКЕ ----------
+    // КОПИРОВАНИЕ АДРЕСА ПРИ КЛИКЕ
     const serverAddress = "Nationshield.play-creative.com";
     const ipElement = document.getElementById('clickableIp');
     
@@ -582,7 +599,7 @@
         ipElement.title = 'Нажмите, чтобы скопировать IP';
     }
     
-    // ---------- КАСТОМНЫЙ ВИДЖЕТ МОНИТОРИНГА (mcsrvstat.us) ----------
+    // КАСТОМНЫЙ ВИДЖЕТ МОНИТОРИНГА (mcsrvstat.us)
     async function fetchServerStatus() {
         const statusDiv = document.getElementById('monitorStatus');
         const playersDiv = document.getElementById('monitorPlayers');
@@ -596,11 +613,11 @@
                 // Сервер онлайн
                 statusDiv.innerHTML = `
                     <span class="online-dot"></span>
-                    <span style="color: #4caf50; font-weight: 600;">СЕРВЕР РАБОТАЕТ</span>
+                    <span style="color: #4caf50;">СЕРВЕР РАБОТАЕТ</span>
                 `;
-                playersDiv.innerHTML = `🟢 Игроков онлайн: ${data.players.online} из ${data.players.max}`;
+                playersDiv.innerHTML = `ИГРОКОВ ОНЛАЙН: ${data.players.online} ИЗ ${data.players.max}`;
                 if (data.version) {
-                    versionDiv.innerHTML = `📌 Версия: ${data.version}`;
+                    versionDiv.innerHTML = `ВЕРСИЯ: ${data.version}`;
                 } else {
                     versionDiv.innerHTML = '';
                 }
@@ -608,19 +625,19 @@
                 // Сервер оффлайн
                 statusDiv.innerHTML = `
                     <span class="offline-dot"></span>
-                    <span style="color: #f44336; font-weight: 600;">СЕРВЕР НЕ ДОСТУПЕН</span>
+                    <span style="color: #f44336;">СЕРВЕР НЕ ДОСТУПЕН</span>
                 `;
-                playersDiv.innerHTML = '🔴 Сервер выключен или не отвечает';
-                versionDiv.innerHTML = 'Проверьте, запущен ли сервер';
+                playersDiv.innerHTML = 'СЕРВЕР ВЫКЛЮЧЕН ИЛИ НЕ ОТВЕЧАЕТ';
+                versionDiv.innerHTML = 'ПРОВЕРЬТЕ, ЗАПУЩЕН ЛИ СЕРВЕР';
             }
         } catch (error) {
             // Ошибка при запросе
             statusDiv.innerHTML = `
                 <span class="offline-dot"></span>
-                <span style="color: #ff9800; font-weight: 600;">ОШИБКА ПРОВЕРКИ</span>
+                <span style="color: #ff9800;">ОШИБКА ПРОВЕРКИ</span>
             `;
-            playersDiv.innerHTML = '⚠️ Не удалось получить статус сервера';
-            versionDiv.innerHTML = 'Попробуйте обновить страницу позже';
+            playersDiv.innerHTML = 'НЕ УДАЛОСЬ ПОЛУЧИТЬ СТАТУС СЕРВЕРА';
+            versionDiv.innerHTML = 'ПОПРОБУЙТЕ ОБНОВИТЬ СТРАНИЦУ ПОЗЖЕ';
             console.error('Ошибка при запросе к API:', error);
         }
     }
@@ -630,7 +647,6 @@
     // Обновляем статус каждые 30 секунд
     setInterval(fetchServerStatus, 30000);
     
-    // Кнопка Discord с микро-анимацией
     const discordBtn = document.getElementById('discordInviteBtn');
     if (discordBtn) {
         discordBtn.addEventListener('click', () => {
@@ -640,8 +656,6 @@
             }, 120);
         });
     }
-    
-    console.log("NationShield — сайт загружен, мониторинг сервера активен");
 </script>
 </body>
 </html>
