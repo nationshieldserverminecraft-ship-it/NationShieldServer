@@ -5,17 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>NationShield | Политический РП сервер 1.21+</title>
     <style>
-        /* ---------- ПОЛНОСТЬЮ ПИКСЕЛЬНЫЙ СТИЛЬ (RETRO / MINECRAFT VIBE) ---------- */
+        /* ---------- ТЁМНЫЙ СТИЛЬ В ДУХЕ DISCORD (С АКЦЕНТАМИ MINECRAFT) ---------- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            image-rendering: crisp-edges;      /* пиксельный рендеринг */
-            image-rendering: pixelated;
-            image-rendering: crisp-edges;
         }
 
-        /* Шрифт — пиксельный, как в старых играх */
+        /* Шрифт: основной — как в Discord (интерфейсный), но с майнкрафт-акцентами */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+
         @font-face {
             font-family: 'Minecraft';
             src: url('https://cdn.jsdelivr.net/npm/minecraft-font@1.0.0/minecraft.woff2') format('woff2'),
@@ -26,15 +25,15 @@
         }
 
         body {
-            background: #0a0c0e;
-            font-family: 'Minecraft', 'Courier New', 'VT323', monospace;
-            color: #e8e6e0;
+            background-color: #0e0f10;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #e1e7f0;
             min-height: 100vh;
             padding: 1.5rem;
             position: relative;
         }
 
-        /* ФОН: картинка + мощное затемнение для читаемости (пиксельная сетка) */
+        /* Фон: изображение из репозитория + мощное затемнение (как в Discord) */
         body::before {
             content: "";
             position: fixed;
@@ -47,12 +46,11 @@
             background-position: center center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            filter: brightness(0.25) contrast(1.2);
+            filter: brightness(0.2) contrast(1.1);
             z-index: -2;
-            image-rendering: pixelated;
         }
 
-        /* дополнительная тёмная накладка + пиксельная текстура */
+        /* Дополнительная тёмная градиентная накладка (как оверлей Discord) */
         body::after {
             content: "";
             position: fixed;
@@ -60,360 +58,389 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.4) 0px, rgba(0,0,0,0.4) 2px, transparent 2px, transparent 6px);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.75) 0%, rgba(15, 15, 20, 0.85) 100%);
             z-index: -1;
             pointer-events: none;
         }
 
-        /* ----- ПИКСЕЛЬНЫЙ КОНТЕЙНЕР (как из игры) ----- */
-        .pixel-container {
-            max-width: 900px;
+        /* ---------- ОСНОВНОЙ КОНТЕЙНЕР (КАРТОЧКА В СТИЛЕ DISCORD) ---------- */
+        .discord-card {
+            max-width: 1000px;
             width: 100%;
             margin: 100px auto 0 auto;
-            background: #1a1c1a;
-            border: 4px solid #7c6b3f;
-            box-shadow: 8px 8px 0 0 #0f0f0a;
-            padding: 1.5rem 1.8rem 2rem 1.8rem;
-            transition: all 0.05s linear;
-            image-rendering: crisp-edges;
+            background: #1e1f22;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transition: all 0.2s ease;
         }
 
-        /* ФОТО В ЛЕВОМ ВЕРХНЕМ УГЛУ (пиксельная рамка) */
-        .corner-pixel-img {
+        /* Внутренний отступ */
+        .card-content {
+            padding: 2rem 2rem 2rem 2rem;
+        }
+
+        /* ЛОГО В ЛЕВОМ ВЕРХНЕМ УГЛУ (круглое, стиль Discord) */
+        .corner-logo {
             position: fixed;
             top: 20px;
             left: 20px;
             z-index: 1000;
-            width: 80px;
-            height: auto;
-            border: 3px solid #b97f3e;
-            box-shadow: 4px 4px 0 0 #3a2a12;
-            transition: all 0.05s linear;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 2px solid #5865f2;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s, border-color 0.1s;
             cursor: pointer;
-            image-rendering: crisp-edges;
+            object-fit: cover;
+            background: #2b2d31;
         }
-        .corner-pixel-img:hover {
-            transform: translate(-1px, -1px);
-            box-shadow: 5px 5px 0 0 #3a2a12;
-            border-color: #e0a453;
+        .corner-logo:hover {
+            transform: scale(1.02);
+            border-color: #7983f5;
         }
 
-        /* ПИКСЕЛЬНЫЙ ЗАГОЛОВОК */
-        .pixel-title {
+        /* Заголовок сайта (кириллица + акцент) */
+        .site-header {
             text-align: center;
-            font-size: 2.4rem;
-            font-weight: normal;
-            letter-spacing: 3px;
-            color: #f0c674;
-            text-shadow: 3px 3px 0 #3a2a0c;
-            margin-bottom: 0.75rem;
-            border-bottom: 3px solid #b97f3e;
-            display: inline-block;
-            width: 100%;
-            padding-bottom: 0.8rem;
-            font-family: 'Minecraft', monospace;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #2b2d31;
+            padding-bottom: 1rem;
+        }
+        .site-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #e1e7f0 0%, #b5bac1 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 8px rgba(88, 101, 242, 0.2);
+            font-family: 'Minecraft', 'Inter', monospace;
             text-transform: uppercase;
         }
+        .sub-badge {
+            font-size: 0.75rem;
+            color: #949ba4;
+            margin-top: 6px;
+            letter-spacing: 0.5px;
+        }
 
-        /* ПИКСЕЛЬНЫЕ ВКЛАДКИ */
-        .pixel-tabs {
+        /* ВКЛАДКИ (как в Discord) */
+        .discord-tabs {
             display: flex;
-            gap: 0.8rem;
-            margin: 2rem 0 1.5rem 0;
-            border-bottom: 3px solid #b97f3e;
-            padding-bottom: 0.5rem;
-            flex-wrap: wrap;
+            gap: 0.25rem;
+            background: #111214;
+            padding: 0.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.8rem;
         }
-
         .tab-btn {
-            background: #25221a;
-            border: 2px solid #9b7a48;
-            color: #e6d5a8;
-            font-family: 'Minecraft', monospace;
-            font-size: 1.1rem;
-            padding: 0.4rem 1.4rem;
+            background: transparent;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #dbdee1;
+            border-radius: 10px;
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.05s linear;
-            box-shadow: 2px 2px 0 0 #2f2612;
-            image-rendering: crisp-edges;
+            transition: all 0.15s;
+            flex: 1;
+            text-align: center;
         }
-
         .tab-btn:hover {
-            background: #5c4a2a;
-            color: #ffe3a0;
-            border-color: #e0a453;
-            transform: translate(-1px, -1px);
-            box-shadow: 3px 3px 0 0 #2f2612;
+            background: #2b2d31;
+            color: #ffffff;
         }
-
         .tab-btn.active {
-            background: #b97f3e;
-            color: #1e1a0a;
-            border-bottom: 2px solid #ffea80;
-            box-shadow: inset 0 -1px 0 0 #ffd966, 2px 2px 0 0 #2a1c08;
+            background: #2b2d31;
+            color: #ffffff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
-        /* ПИКСЕЛЬНЫЙ КОНТЕНТ */
-        .pixel-content {
-            background: #12140e;
-            border: 3px solid #9b7a48;
-            padding: 1.8rem;
-            margin: 0.8rem 0 1.8rem;
-            box-shadow: inset 0 0 0 2px #2a2418, 3px 3px 0 0 #0a0a05;
+        /* КОНТЕНТ (как блоки в Discord) */
+        .content-panel {
+            background: #111214;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 0.5rem 0 1.5rem;
+            border: 1px solid #2b2d31;
         }
-
         .tab-pane {
             display: none;
-            line-height: 1.45;
+            animation: fade 0.2s ease;
         }
-
         .tab-pane.active-pane {
             display: block;
         }
-
-        .server-desc {
-            font-size: 1rem;
-            margin: 0.5rem 0 1.8rem 0;
-            color: #e6d5a8;
-            border-left: 3px solid #e0a453;
-            padding-left: 1rem;
-            letter-spacing: 0.5px;
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(4px);}
+            to { opacity: 1; transform: translateY(0);}
         }
 
-        /* ПИКСЕЛЬНЫЙ БЛОК АДРЕСА */
-        .address-pixel-block {
-            background: #0c0e0a;
-            border: 3px solid #b97f3e;
+        /* Описание сервера */
+        .server-desc {
+            background: #1e1f22;
+            border-left: 4px solid #5865f2;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.8rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            color: #cbd2d9;
+        }
+
+        /* Блок адреса — тёмный карточка */
+        .address-dark-card {
+            background: #1a1b1e;
+            border-radius: 16px;
             padding: 1.5rem;
             text-align: center;
-            margin: 1.2rem 0;
+            margin: 1rem 0;
+            border: 1px solid #2b2d31;
         }
-
-        /* Адрес — кликабельный пиксельный стиль */
-        .server-ip-pixel {
-            font-family: 'Minecraft', monospace;
+        .ip-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            color: #5865f2;
+            margin-bottom: 12px;
+        }
+        /* Кликабельный адрес */
+        .server-ip-clickable {
+            font-family: 'Minecraft', 'Courier New', monospace;
             font-size: 1.8rem;
-            font-weight: normal;
-            color: #f0c674;
-            background: #030502;
+            font-weight: 500;
+            background: #0e0f10;
             display: inline-block;
-            padding: 0.5rem 1.2rem;
-            letter-spacing: 1px;
-            word-break: break-all;
-            border: 2px solid #c69048;
+            padding: 0.6rem 1.4rem;
+            border-radius: 40px;
+            letter-spacing: 0.5px;
+            color: #e1e7f0;
+            border: 1px solid #3b3f48;
             cursor: pointer;
-            transition: 0.02s linear;
-            box-shadow: 2px 2px 0 0 #2a1c08;
+            transition: all 0.15s;
+            backdrop-filter: blur(4px);
         }
-        .server-ip-pixel:hover {
-            background: #1e241a;
-            border-color: #e0a453;
-            transform: translate(-1px, -1px);
-            box-shadow: 3px 3px 0 0 #2a1c08;
+        .server-ip-clickable:hover {
+            background: #2b2d31;
+            border-color: #5865f2;
+            color: white;
+            transform: scale(1.01);
         }
-        .server-ip-pixel:active {
-            transform: translate(1px, 1px);
-            box-shadow: 1px 1px 0 0 #2a1c08;
+        .server-ip-clickable:active {
+            transform: scale(0.98);
         }
-
-        .version-badge-pixel {
+        .version-tag {
             margin-top: 1rem;
-            font-size: 0.8rem;
-            color: #c6b07a;
-            background: #1e1c14;
+            font-size: 0.75rem;
+            background: #1e1f22;
             display: inline-block;
             padding: 0.2rem 1rem;
-            border: 1px solid #7c6b3f;
-            font-family: monospace;
-            letter-spacing: 0.5px;
+            border-radius: 30px;
+            color: #949ba4;
+            font-weight: 500;
         }
 
-        /* ПИКСЕЛЬНАЯ КНОПКА DISCORD */
-        .pixel-button {
-            display: inline-block;
-            background: #25221a;
-            border: 2px solid #9b7a48;
-            font-family: 'Minecraft', monospace;
-            font-size: 0.9rem;
-            padding: 0.6rem 1.8rem;
+        /* Кнопка Discord (в стиле Discord) */
+        .discord-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #5865f2;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.7rem 1.8rem;
             margin-top: 0.5rem;
-            color: #f0c674;
-            text-transform: uppercase;
+            color: white;
+            border-radius: 40px;
             cursor: pointer;
-            transition: 0.05s linear;
+            transition: 0.15s;
             text-decoration: none;
-            letter-spacing: 1px;
-            box-shadow: 3px 3px 0 0 #1f180c;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
-        .pixel-button:hover {
-            background: #5c4a2a;
-            border-color: #e0a453;
-            color: #ffe3a0;
-            transform: translate(-1px, -1px);
-            box-shadow: 4px 4px 0 0 #1f180c;
+        .discord-action-btn:hover {
+            background: #4752c4;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(88, 101, 242, 0.3);
         }
-        .pixel-button:active {
-            transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0 0 #1f180c;
-        }
-
         .bottom-group {
             display: flex;
             justify-content: center;
-            margin-top: 1.5rem;
+            margin: 1rem 0 0.5rem;
         }
 
-        .pixel-footer {
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 2px solid #7c6b3f;
-            font-size: 0.7rem;
-            color: #b6a87a;
-            font-family: monospace;
-        }
-
-        /* ПРАВИЛА (пустые, пиксельная заглушка) */
-        .rules-pixel-empty {
+        /* Правила (пустые, но в стиле Discord) */
+        .rules-placeholder-dark {
             text-align: center;
             padding: 2rem 1rem;
-            color: #cfc194;
-            border: 2px dashed #b97f3e;
-            background: #0c0e0a;
+            background: #1e1f22;
+            border-radius: 16px;
+            color: #b5bac1;
+            border: 1px dashed #3b3f48;
         }
-        .rules-pixel-empty span {
+        .rules-placeholder-dark span {
             display: block;
-            font-size: 2.4rem;
-            margin-bottom: 0.8rem;
-            opacity: 0.8;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
         }
 
-        /* ТОСТ-УВЕДОМЛЕНИЕ В ПИКСЕЛЬНОМ СТИЛЕ */
-        .pixel-toast {
+        /* Футер */
+        .footer-dark {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #2b2d31;
+            font-size: 0.7rem;
+            color: #6d737c;
+            font-weight: 500;
+        }
+
+        /* Тост-уведомление (как в Discord) */
+        .discord-toast {
             position: fixed;
             bottom: 2rem;
             left: 50%;
             transform: translateX(-50%);
-            background: #1a1c14;
-            border: 2px solid #e0a453;
-            padding: 0.6rem 1.8rem;
-            font-family: 'Minecraft', monospace;
-            font-size: 0.8rem;
-            color: #f0c674;
+            background: #1e1f22;
+            border: 1px solid #3b3f48;
+            border-radius: 40px;
+            padding: 0.6rem 1.6rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #e1e7f0;
             z-index: 999;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
             white-space: nowrap;
-            box-shadow: 4px 4px 0 0 #1f1a0a;
-            text-transform: uppercase;
         }
 
-        /* Адаптация под мобильные */
-        @media (max-width: 600px) {
+        /* Адаптивность */
+        @media (max-width: 650px) {
             body {
                 padding: 0.8rem;
             }
-            .pixel-container {
-                margin-top: 75px;
-                padding: 0.8rem;
+            .discord-card {
+                margin-top: 80px;
             }
-            .corner-pixel-img {
-                width: 55px;
+            .card-content {
+                padding: 1.2rem;
+            }
+            .corner-logo {
+                width: 44px;
+                height: 44px;
                 top: 12px;
                 left: 12px;
             }
-            .server-ip-pixel {
+            .server-ip-clickable {
                 font-size: 1.1rem;
+                padding: 0.4rem 1rem;
+                word-break: break-all;
             }
-            .pixel-title {
+            .site-title {
                 font-size: 1.6rem;
             }
-            .tab-btn {
-                font-size: 0.85rem;
-                padding: 0.2rem 1rem;
-            }
-            .pixel-toast {
+            .discord-toast {
                 white-space: normal;
-                width: 90%;
+                width: 85%;
                 text-align: center;
+            }
+            .tab-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
             }
         }
     </style>
 </head>
 <body>
 
-<!-- ЛОГО В ЛЕВОМ ВЕРХНЕМ УГЛУ (ПИКСЕЛЬНАЯ РАМКА) -->
+<!-- ЛОГОТИП В ЛЕВОМ УГЛУ (стиль Discord) -->
 <img src="https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/photo_2026-04-22_15-48-48.jpg" 
-     alt="NationShield emblem" 
-     class="corner-pixel-img"
+     alt="NationShield" 
+     class="corner-logo"
      title="NationShield">
 
-<div class="pixel-container">
-    <div class="pixel-title">
-        ⚔ NATIONSHIELD ⚔
-    </div>
-
-    <!-- Пиксельные вкладки -->
-    <div class="pixel-tabs">
-        <button class="tab-btn active" data-tab="main">🏠 ГЛАВНАЯ</button>
-        <button class="tab-btn" data-tab="rules">📜 ПРАВИЛА</button>
-    </div>
-
-    <div class="pixel-content">
-        <!-- Вкладка Главная -->
-        <div id="main" class="tab-pane active-pane">
-            <div class="server-desc">
-                ▸ РП политический сервер Minecraft
+<div class="discord-card">
+    <div class="card-content">
+        <!-- Шапка -->
+        <div class="site-header">
+            <div class="site-title">
+                ⚔ NATIONSHIELD ⚔
             </div>
-
-            <div class="address-pixel-block">
-                <div style="margin-bottom: 12px; font-size: 0.8rem; letter-spacing: 2px; color: #c69c5a;">⚡ АКТУАЛЬНЫЙ IP ⚡</div>
-                <!-- Адрес кликабельный, отдельной кнопки нет -->
-                <div class="server-ip-pixel" id="serverIpPixel">
-                    Nationshield.play-creative.com
-                </div>
-                <div class="version-badge-pixel">
-                    🧪 Java Edition 1.21+
-                </div>
-                <div style="font-size: 0.65rem; margin-top: 12px; color: #ab9a6a;">
-                    ▶ НАЖМИ НА АДРЕС, ЧТОБЫ СКОПИРОВАТЬ ◀
-                </div>
-            </div>
-            <div style="text-align: center; font-size: 0.7rem; margin-top: 6px; color: #c6b07a;">
-                Власть, дипломатия, интриги. Твой след в истории.
+            <div class="sub-badge">
+                ПОЛИТИЧЕСКАЯ РОЛЕВАЯ ИГРА
             </div>
         </div>
 
-        <!-- Вкладка Правила (пустые, пиксельный вид) -->
-        <div id="rules" class="tab-pane">
-            <div class="rules-pixel-empty">
-                <span>📖</span>
-                ПРАВИЛА СЕРВЕРА В РАЗРАБОТКЕ<br>
-                <span style="font-size: 0.7rem; display: block; margin-top: 12px;">Следите за обновлениями в Discord</span>
+        <!-- Вкладки в стиле Discord -->
+        <div class="discord-tabs">
+            <button class="tab-btn active" data-tab="main">Главная</button>
+            <button class="tab-btn" data-tab="rules">Правила</button>
+        </div>
+
+        <div class="content-panel">
+            <!-- Вкладка Главная -->
+            <div id="main" class="tab-pane active-pane">
+                <div class="server-desc">
+                    ▸ РП политический сервер Minecraft
+                </div>
+
+                <div class="address-dark-card">
+                    <div class="ip-label">🔌 АКТУАЛЬНЫЙ АДРЕС</div>
+                    <!-- Адрес кликабельный, кнопки копирования нет -->
+                    <div class="server-ip-clickable" id="clickableIp">
+                        Nationshield.play-creative.com
+                    </div>
+                    <div class="version-tag">
+                        🧪 Java Edition 1.21+
+                    </div>
+                    <div style="font-size: 0.65rem; margin-top: 12px; color: #6d737c;">
+                        Нажми на адрес, чтобы скопировать
+                    </div>
+                </div>
+                <div style="text-align: center; font-size: 0.75rem; margin-top: 6px; color: #9ea3ac;">
+                    Власть, дипломатия, интриги. Твой след в истории.
+                </div>
+            </div>
+
+            <!-- Вкладка Правила (пока пустые) -->
+            <div id="rules" class="tab-pane">
+                <div class="rules-placeholder-dark">
+                    <span>📜</span>
+                    Правила сервера в разработке<br>
+                    <span style="font-size: 0.8rem; display: block; margin-top: 10px;">Следите за обновлениями в Discord</span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="bottom-group">
-        <a href="https://discord.gg/M6DTUxYh" target="_blank" rel="noopener noreferrer" class="pixel-button" id="discordPixelBtn">
-            💬 DISCORD СЕРВЕР
-        </a>
-    </div>
+        <div class="bottom-group">
+            <a href="https://discord.gg/M6DTUxYh" target="_blank" rel="noopener noreferrer" class="discord-action-btn" id="discordInviteBtn">
+                💬 Присоединиться к Discord
+            </a>
+        </div>
 
-    <div class="pixel-footer">
-        NATIONSHIELD • ПОЛИТИЧЕСКАЯ РОЛЕВКА • 1.21+
+        <div class="footer-dark">
+            NATIONSHIELD • ПОЛИТИЧЕСКАЯ РП • 1.21+
+        </div>
     </div>
 </div>
 
 <script>
-    // ---------- ПЕРЕКЛЮЧЕНИЕ ПИКСЕЛЬНЫХ ВКЛАДОК ----------
+    // ---------- УПРАВЛЕНИЕ ВКЛАДКАМИ ----------
     const tabBtns = document.querySelectorAll('.tab-btn');
     const panes = document.querySelectorAll('.tab-pane');
 
-    function switchTab(tabId) {
+    function switchToTab(tabId) {
         panes.forEach(pane => pane.classList.remove('active-pane'));
-        const activePane = document.getElementById(tabId);
-        if (activePane) activePane.classList.add('active-pane');
+        const targetPane = document.getElementById(tabId);
+        if (targetPane) targetPane.classList.add('active-pane');
         
         tabBtns.forEach(btn => {
             btn.classList.remove('active');
@@ -424,23 +451,23 @@
     }
 
     tabBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const target = btn.getAttribute('data-tab');
-            switchTab(target);
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            switchToTab(tabId);
         });
     });
 
-    // ---------- КОПИРОВАНИЕ АДРЕСА ПРИ КЛИКЕ НА НЕГО (без отдельной кнопки) ----------
-    const serverIp = "Nationshield.play-creative.com";
-    const ipPixelElement = document.getElementById('serverIpPixel');
+    // ---------- КОПИРОВАНИЕ АДРЕСА ПРИ КЛИКЕ (без отдельной кнопки) ----------
+    const serverAddress = "Nationshield.play-creative.com";
+    const ipElement = document.getElementById('clickableIp');
     
-    function showPixelMessage(msg) {
-        const oldToast = document.querySelector('.pixel-toast');
-        if (oldToast) oldToast.remove();
+    function showDiscordToast(message) {
+        const existingToast = document.querySelector('.discord-toast');
+        if (existingToast) existingToast.remove();
         
         const toast = document.createElement('div');
-        toast.className = 'pixel-toast';
-        toast.textContent = msg;
+        toast.className = 'discord-toast';
+        toast.textContent = message;
         document.body.appendChild(toast);
         
         setTimeout(() => {
@@ -449,83 +476,50 @@
         }, 2200);
     }
     
-    async function copyPixelAddress() {
+    async function copyServerIp() {
         try {
-            await navigator.clipboard.writeText(serverIp);
-            showPixelMessage(`✅ СКОПИРОВАНО: ${serverIp}`);
-            // пиксельная анимация
-            ipPixelElement.style.transform = 'translate(1px, 1px)';
-            ipPixelElement.style.boxShadow = '1px 1px 0 0 #2a1c08';
+            await navigator.clipboard.writeText(serverAddress);
+            showDiscordToast(`✅ Скопировано: ${serverAddress}`);
+            // Визуальный фидбек
+            ipElement.style.transform = 'scale(0.97)';
             setTimeout(() => {
-                ipPixelElement.style.transform = '';
-                ipPixelElement.style.boxShadow = '2px 2px 0 0 #2a1c08';
-            }, 100);
+                ipElement.style.transform = '';
+            }, 120);
         } catch (err) {
-            // резервный метод
+            // fallback для старых браузеров
             const textarea = document.createElement('textarea');
-            textarea.value = serverIp;
+            textarea.value = serverAddress;
             document.body.appendChild(textarea);
             textarea.select();
             document.execCommand('copy');
             document.body.removeChild(textarea);
-            showPixelMessage(`📋 АДРЕС СКОПИРОВАН: ${serverIp}`);
-            ipPixelElement.style.transform = 'translate(1px, 1px)';
+            showDiscordToast(`📋 Адрес скопирован: ${serverAddress}`);
+            ipElement.style.transform = 'scale(0.97)';
             setTimeout(() => {
-                ipPixelElement.style.transform = '';
-            }, 100);
+                ipElement.style.transform = '';
+            }, 120);
         }
     }
     
-    if (ipPixelElement) {
-        ipPixelElement.addEventListener('click', copyPixelAddress);
-        ipPixelElement.style.cursor = 'pointer';
-        ipPixelElement.title = 'Нажми, чтобы скопировать IP';
+    if (ipElement) {
+        ipElement.addEventListener('click', copyServerIp);
+        ipElement.style.cursor = 'pointer';
+        ipElement.title = 'Нажмите, чтобы скопировать IP';
     }
     
-    // Пиксельный эффект для кнопки Discord
-    const discordPixel = document.getElementById('discordPixelBtn');
-    if (discordPixel) {
-        discordPixel.addEventListener('click', (e) => {
-            discordPixel.style.transform = 'translate(2px, 2px)';
-            discordPixel.style.boxShadow = '1px 1px 0 0 #1f180c';
+    // Кнопка Discord с микро-анимацией
+    const discordBtn = document.getElementById('discordInviteBtn');
+    if (discordBtn) {
+        discordBtn.addEventListener('click', () => {
+            discordBtn.style.transform = 'scale(0.97)';
             setTimeout(() => {
-                discordPixel.style.transform = '';
-                discordPixel.style.boxShadow = '3px 3px 0 0 #1f180c';
-            }, 100);
+                discordBtn.style.transform = '';
+            }, 120);
         });
     }
     
-    // Все дополнительные эффекты для пиксельных кнопок и вкладок (микро-анимация)
-    const allPixelButtons = document.querySelectorAll('.tab-btn, .pixel-button');
-    allPixelButtons.forEach(btn => {
-        btn.addEventListener('mousedown', () => {
-            btn.style.transform = 'translate(1px, 1px)';
-            btn.style.boxShadow = '1px 1px 0 0 #2f2612';
-        });
-        btn.addEventListener('mouseup', () => {
-            setTimeout(() => {
-                if (btn.classList.contains('tab-btn')) {
-                    btn.style.transform = '';
-                    btn.style.boxShadow = '2px 2px 0 0 #2f2612';
-                } else {
-                    btn.style.transform = '';
-                    btn.style.boxShadow = '3px 3px 0 0 #1f180c';
-                }
-            }, 40);
-        });
-        btn.addEventListener('mouseleave', () => {
-            btn.style.transform = '';
-            if (btn.classList.contains('tab-btn')) {
-                btn.style.boxShadow = '2px 2px 0 0 #2f2612';
-            } else {
-                btn.style.boxShadow = '3px 3px 0 0 #1f180c';
-            }
-        });
-    });
-    
-    // Улучшенная производительность и оптимизация: убираем лишние реflow
-    // Фоновое изображение уже кэшируется браузером, пиксельные тени заменены на чёткие.
-    console.log("NationShield — полностью пиксельный стиль, фон с затемнением, адрес копируется кликом");
+    // Эффекты для кнопок вкладок (оставляем гладкими)
+    console.log("NationShield — тёмная тема в стиле Discord, фон с затемнением, адрес копируется кликом");
 </script>
 </body>
 </html>
