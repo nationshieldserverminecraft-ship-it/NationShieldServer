@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>NationShield | Политический РП сервер 1.21+</title>
     <style>
-        /* ---------- MINECRAFT / МИНИМАЛИСТИЧНЫЙ СТИЛЬ ---------- */
+        /* ---------- СТИЛЬ ПОД ФОТОГРАФИЮ (МИНИМАЛИЗМ + АТМОСФЕРА) ---------- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Шрифт в стиле Minecraft с читабельностью */
+        /* Шрифт в стиле Minecraft, но с хорошей читаемостью */
         @font-face {
             font-family: 'Minecraft';
             src: url('https://cdn.jsdelivr.net/npm/minecraft-font@1.0.0/minecraft.woff2') format('woff2'),
@@ -23,29 +23,64 @@
         }
 
         body {
-            background: #0f0f0f;
-            background-image: radial-gradient(#2a2a2a 1px, #0f0f0f 1px);
-            background-size: 24px 24px;
+            background: #0a0c0e;  /* Тёмный, почти черный фон, чтобы фото выделялось */
             font-family: 'Minecraft', 'Courier New', 'Consolas', monospace;
-            color: #e6e6e6;
+            color: #e8e6e0;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 2rem;
+            position: relative;
         }
 
-        /* Минималистичный контейнер — чистый, без лишних теней */
-        .shield-container {
+        /* Основной контейнер — сдвинут вниз, чтобы не перекрывать фото */
+        .main-content {
             max-width: 860px;
             width: 100%;
-            background: #161616;
-            border: 1px solid #3a3a3a;
-            padding: 2rem 2rem 2rem 2rem;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 100px;      /* Отступ сверху, чтобы контент был под фото */
+            background: rgba(18, 20, 22, 0.85);
+            backdrop-filter: blur(2px);
+            border: 1px solid rgba(200, 180, 120, 0.3);
+            padding: 2rem;
             transition: all 0.2s ease;
         }
 
-        /* Заголовок — строгий, без излишеств */
+        /* ФОТО В ЛЕВОМ ВЕРХНЕМ УГЛУ */
+        .corner-image {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            width: 80px;
+            height: auto;
+            border-radius: 4px;
+            border: 2px solid #c8a86b;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .corner-image:hover {
+            transform: scale(1.02);
+            border-color: #e0b354;
+        }
+
+        /* Для мобильных — фото чуть меньше */
+        @media (max-width: 600px) {
+            .corner-image {
+                width: 55px;
+                top: 12px;
+                left: 12px;
+            }
+            .main-content {
+                margin-top: 80px;
+                padding: 1rem;
+            }
+            body {
+                padding: 1rem;
+            }
+        }
+
+        /* Заголовок сайта */
         .site-title {
             text-align: center;
             font-size: 2.2rem;
@@ -54,7 +89,7 @@
             color: #e0b354;
             text-shadow: 0 0 2px #1f1a0a;
             margin-bottom: 0.75rem;
-            border-bottom: 1px solid #2e2e2e;
+            border-bottom: 1px solid #c8a86b;
             display: inline-block;
             width: 100%;
             padding-bottom: 0.75rem;
@@ -62,19 +97,19 @@
             text-transform: uppercase;
         }
 
-        /* Вкладки — минималистичные кнопки */
+        /* Вкладки */
         .nav-tabs {
             display: flex;
             gap: 0.5rem;
             margin: 2rem 0 1.5rem 0;
-            border-bottom: 1px solid #2e2e2e;
+            border-bottom: 1px solid #c8a86b;
             padding-bottom: 0.5rem;
         }
 
         .tab-btn {
             background: transparent;
             border: none;
-            color: #b0b0b0;
+            color: #c8c6b8;
             font-family: 'Minecraft', monospace;
             font-size: 1.1rem;
             padding: 0.4rem 1.2rem;
@@ -86,7 +121,7 @@
 
         .tab-btn:hover {
             color: #e0b354;
-            background: #1f1f1f;
+            background: rgba(200, 168, 107, 0.15);
         }
 
         .tab-btn.active {
@@ -95,12 +130,12 @@
             margin-bottom: -0.5rem;
         }
 
-        /* Контент — чистый, воздух, хорошая читаемость */
+        /* Контент */
         .tab-content {
-            background: #131313;
+            background: rgba(12, 14, 16, 0.7);
             padding: 1.8rem;
             margin: 0.5rem 0 1.8rem;
-            border-left: 2px solid #2a2a2a;
+            border-left: 2px solid #c8a86b;
         }
 
         .tab-pane {
@@ -112,22 +147,21 @@
             display: block;
         }
 
-        /* Описание сервера */
         .server-description {
             font-size: 1rem;
             margin: 1rem 0 1.8rem 0;
-            color: #ccccaa;
+            color: #ddd9c6;
             border-left: 2px solid #e0b354;
             padding-left: 1rem;
         }
 
-        /* Блок адреса — минималистичный, без лишних рамок */
+        /* Блок адреса */
         .address-block {
-            background: #0c0c0c;
+            background: rgba(8, 10, 12, 0.8);
             padding: 1.5rem;
             text-align: center;
             margin: 1.2rem 0;
-            border: 1px solid #2c2c2c;
+            border: 1px solid #c8a86b;
         }
 
         .server-ip {
@@ -135,29 +169,29 @@
             font-size: 1.8rem;
             font-weight: normal;
             color: #e0b354;
-            background: #080808;
+            background: #0a0c0e;
             display: inline-block;
             padding: 0.4rem 1.2rem;
             letter-spacing: 1px;
             word-break: break-all;
-            border: 1px solid #3a3a3a;
+            border: 1px solid #c8a86b;
         }
 
         .version-badge {
             margin-top: 1rem;
             font-size: 0.8rem;
-            color: #9e9e7a;
-            background: #1a1a1a;
+            color: #b8b494;
+            background: rgba(26, 28, 30, 0.9);
             display: inline-block;
             padding: 0.2rem 0.8rem;
             font-family: monospace;
         }
 
-        /* Кнопка в минималистичном стиле */
+        /* Кнопки в стиле "под старину" */
         .minimal-btn {
             display: inline-block;
-            background: #1f1f1f;
-            border: 1px solid #4a4a4a;
+            background: #1f211f;
+            border: 1px solid #c8a86b;
             font-family: 'Minecraft', monospace;
             font-size: 0.9rem;
             padding: 0.6rem 1.8rem;
@@ -171,7 +205,7 @@
         }
 
         .minimal-btn:hover {
-            background: #2a2a2a;
+            background: #2a2c28;
             border-color: #e0b354;
             color: #f5cb7e;
         }
@@ -180,33 +214,30 @@
             transform: translateY(1px);
         }
 
-        /* Группа нижних кнопок */
         .bottom-group {
             display: flex;
             justify-content: center;
             margin-top: 1.2rem;
         }
 
-        /* Футер — лёгкий, не отвлекает */
         .footer-note {
             text-align: center;
             margin-top: 2rem;
             padding-top: 1rem;
-            border-top: 1px solid #2a2a2a;
+            border-top: 1px solid #c8a86b;
             font-size: 0.7rem;
-            color: #6a6a5a;
+            color: #9e9a82;
             font-family: monospace;
         }
 
-        /* Правила (пустые, но с минималистичным оформлением) */
+        /* Правила (пустые) */
         .rules-empty {
             text-align: center;
             padding: 2.5rem 1rem;
-            color: #b8b894;
-            border: 1px dashed #3a3a3a;
-            background: #0e0e0e;
+            color: #c8c6b0;
+            border: 1px dashed #c8a86b;
+            background: rgba(10, 12, 14, 0.6);
         }
-
         .rules-empty span {
             display: block;
             font-size: 2rem;
@@ -214,13 +245,13 @@
             opacity: 0.7;
         }
 
-        /* Уведомление (тост) */
+        /* Тост-уведомление */
         .toast-notify {
             position: fixed;
             bottom: 2rem;
             left: 50%;
             transform: translateX(-50%);
-            background: #1c1c1c;
+            background: #1a1c1a;
             border: 1px solid #e0b354;
             padding: 0.6rem 1.5rem;
             font-family: 'Minecraft', monospace;
@@ -230,72 +261,64 @@
             white-space: nowrap;
             backdrop-filter: blur(4px);
         }
-
-        /* Адаптивность */
         @media (max-width: 600px) {
-            body {
-                padding: 1rem;
-            }
-            .shield-container {
-                padding: 1rem;
-            }
-            .server-ip {
-                font-size: 1.2rem;
-                word-break: break-all;
-            }
-            .site-title {
-                font-size: 1.6rem;
-            }
-            .tab-btn {
-                font-size: 0.9rem;
-                padding: 0.3rem 0.8rem;
-            }
             .toast-notify {
                 white-space: normal;
                 width: 90%;
                 text-align: center;
+            }
+            .server-ip {
+                font-size: 1.2rem;
+            }
+            .site-title {
+                font-size: 1.6rem;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="shield-container">
-    <!-- Заголовок: Nationshield (без mc, просто название) -->
+<!-- ИЗОБРАЖЕНИЕ В ЛЕВОМ ВЕРХНЕМ УГЛУ (прямая ссылка raw) -->
+<img src="https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/photo_2026-04-22_15-48-48.jpg" 
+     alt="NationShield emblem" 
+     class="corner-image"
+     title="NationShield">
+
+<div class="main-content">
     <div class="site-title">
         ⚔ NATIONSHIELD ⚔
     </div>
 
-    <!-- Вкладки: Главная / Правила -->
+    <!-- Вкладки -->
     <div class="nav-tabs">
         <button class="tab-btn active" data-tab="main">Главная</button>
         <button class="tab-btn" data-tab="rules">Правила</button>
     </div>
 
     <div class="tab-content">
-        <!-- Панель "Главная" -->
+        <!-- Панель Главная -->
         <div id="main" class="tab-pane active-pane">
-            <!-- Краткое описание: РП политический сервер Minecraft -->
             <div class="server-description">
                 ▸ РП политический сервер Minecraft
             </div>
 
-            <!-- Блок адреса -->
             <div class="address-block">
-                <div style="margin-bottom: 12px; font-size: 0.8rem; letter-spacing: 1px; color: #8e8e6e;">⚡ АКТУАЛЬНЫЙ IP ⚡</div>
+                <div style="margin-bottom: 12px; font-size: 0.8rem; letter-spacing: 1px; color: #c8a86b;">⚡ АКТУАЛЬНЫЙ IP ⚡</div>
                 <div class="server-ip" id="serverIpDisplay">
                     Nationshield.play-creative.com
                 </div>
                 <button class="minimal-btn" id="copyIpBtn">📋 Скопировать адрес</button>
-                <!-- Версия: только Java 1.21+ -->
                 <div class="version-badge">
                     🧪 Java Edition 1.21+
                 </div>
             </div>
-            <!-- Только копирование, без лишних фраз. Убрана строка "кликай по кнопке..." и упоминания Bedrock -->
+            <!-- Текст-акцент под стать фото -->
+            <div style="text-align: center; font-size: 0.75rem; margin-top: 8px; color: #b8b494;">
+                Власть, дипломатия, интриги. Твой след в истории.
+            </div>
         </div>
 
-        <!-- Панель "Правила" (пока пустые, но в минималистичном стиле) -->
+        <!-- Панель Правила (пустые) -->
         <div id="rules" class="tab-pane">
             <div class="rules-empty">
                 <span>📜</span>
@@ -305,7 +328,6 @@
         </div>
     </div>
 
-    <!-- Кнопка Discord (минималистичная, но стильная) -->
     <div class="bottom-group">
         <a href="https://discord.gg/M6DTUxYh" target="_blank" rel="noopener noreferrer" class="minimal-btn" id="discordLink">
             💬 Discord сервер
@@ -319,17 +341,15 @@
 
 <script>
     // ---------- ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ----------
-    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabBtns = document.querySelectorAll('.tab-btn');
     const panes = document.querySelectorAll('.tab-pane');
 
-    function switchToTab(tabId) {
-        panes.forEach(pane => {
-            pane.classList.remove('active-pane');
-        });
+    function switchTab(tabId) {
+        panes.forEach(pane => pane.classList.remove('active-pane'));
         const activePane = document.getElementById(tabId);
         if (activePane) activePane.classList.add('active-pane');
         
-        tabButtons.forEach(btn => {
+        tabBtns.forEach(btn => {
             btn.classList.remove('active');
             if (btn.getAttribute('data-tab') === tabId) {
                 btn.classList.add('active');
@@ -337,33 +357,24 @@
         });
     }
 
-    tabButtons.forEach(btn => {
+    tabBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
-            const targetTab = btn.getAttribute('data-tab');
-            if (targetTab === 'main') switchToTab('main');
-            else if (targetTab === 'rules') switchToTab('rules');
+            const target = btn.getAttribute('data-tab');
+            switchTab(target);
         });
     });
 
-    // ---------- КОПИРОВАНИЕ АДРЕСА (только Nationshield.play-creative.com) ----------
+    // ---------- КОПИРОВАНИЕ IP ----------
     const serverIp = "Nationshield.play-creative.com";
-    const copyButton = document.getElementById('copyIpBtn');
+    const copyBtn = document.getElementById('copyIpBtn');
     
-    function showToastMessage(msg, isError = false) {
-        // удаляем предыдущий тост, если есть
+    function showMessage(msg) {
         const oldToast = document.querySelector('.toast-notify');
         if (oldToast) oldToast.remove();
         
         const toast = document.createElement('div');
         toast.className = 'toast-notify';
         toast.textContent = msg;
-        if (isError) {
-            toast.style.borderColor = '#aa6e3a';
-            toast.style.color = '#dba452';
-        } else {
-            toast.style.borderColor = '#e0b354';
-            toast.style.color = '#e0b354';
-        }
         document.body.appendChild(toast);
         
         setTimeout(() => {
@@ -372,67 +383,44 @@
         }, 2200);
     }
     
-    async function copyServerIp() {
+    async function copyAddress() {
         try {
             await navigator.clipboard.writeText(serverIp);
-            showToastMessage(`✅ Скопировано: ${serverIp}`);
-            // лёгкая анимация нажатия
-            copyButton.style.transform = 'translateY(1px)';
-            setTimeout(() => {
-                copyButton.style.transform = 'translateY(0px)';
-            }, 120);
+            showMessage(`✅ Скопировано: ${serverIp}`);
+            copyBtn.style.transform = 'translateY(1px)';
+            setTimeout(() => { copyBtn.style.transform = ''; }, 120);
         } catch (err) {
-            // fallback для старых браузеров
             const textarea = document.createElement('textarea');
             textarea.value = serverIp;
             document.body.appendChild(textarea);
             textarea.select();
             document.execCommand('copy');
             document.body.removeChild(textarea);
-            showToastMessage(`📋 Адрес скопирован: ${serverIp}`);
+            showMessage(`📋 Адрес скопирован: ${serverIp}`);
         }
     }
     
-    if (copyButton) {
-        copyButton.addEventListener('click', copyServerIp);
-    }
+    copyBtn.addEventListener('click', copyAddress);
     
-    // Клик по самому ip тоже копирует (удобно)
+    // Клик по IP тоже копирует
     const ipElement = document.getElementById('serverIpDisplay');
     if (ipElement) {
         ipElement.style.cursor = 'pointer';
-        ipElement.title = 'Нажмите, чтобы скопировать адрес';
-        ipElement.addEventListener('click', () => {
-            copyServerIp();
-        });
+        ipElement.title = 'Нажмите, чтобы скопировать';
+        ipElement.addEventListener('click', copyAddress);
     }
     
-    // Кнопка Discord: оставляем рабочий href и добавляем минимальный эффект
+    // Discord кнопка с эффектом
     const discordBtn = document.getElementById('discordLink');
     if (discordBtn) {
-        discordBtn.addEventListener('click', (e) => {
-            // не блокируем переход, просто добавляем визуал
+        discordBtn.addEventListener('click', () => {
             discordBtn.style.transform = 'translateY(1px)';
-            setTimeout(() => {
-                discordBtn.style.transform = 'translateY(0px)';
-            }, 100);
+            setTimeout(() => { discordBtn.style.transform = ''; }, 100);
         });
     }
     
-    // Убираем возможные остатки старых смайликов, заменяем на более подходящие под стиль сервера.
-    // Вместо стандартных смайлов используем щиты, скрещенные мечи и т.д. — уже добавлены аккуратно.
-    // Также проверим, что версия указана 1.21+ и нет упоминаний bedrock.
-    // В футере и бадже версии всё приведено к 1.21+
-    // Убраны лишние декоративные элементы, упрощена структура, улучшена читаемость.
-    
-    // Дополнительно: для более чистого восприятия убираем лишние пиксельные тени, оставляя минимализм.
-    // Сайт выглядит строго, но с намёком на майнкрафт-стиль за счёт шрифта и цветовой гаммы (тёмный фон + приглушённое золото).
-    console.log("NationShield — минималистичный сайт в стиле Minecraft | Политический РП сервер 1.21+");
-    
-    // небольшая проверка: чтобы случайно не осталось "bedrock" или "1.20" — таких строк нет в коде.
-    // Версия 1.21+ отображается в блоке version-badge.
-    // Также убрали все стандартные эмодзи, оставив лишь тематические: ⚔, 📋, 💬, 📜, ⚡.
-    // Эмодзи выглядят аккуратно и соответствуют духу сервера.
+    // Убеждаемся, что фото отображается (raw-ссылка)
+    console.log("Сайт обновлён: фото в левом углу, стиль адаптирован");
 </script>
 </body>
 </html>
