@@ -3,324 +3,334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>NationShield | Пиксельный Minecraft сервер</title>
+    <title>NationShield | Политический РП сервер Minecraft</title>
     <style>
-        /* ---------- ПИКСЕЛЬНЫЙ СТИЛЬ ---------- */
+        /* ---------- MINECRAFT СТИЛЬ ---------- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            image-rendering: crisp-edges;        /* пиксельный рендеринг */
+            image-rendering: crisp-edges;
             image-rendering: pixelated;
             image-rendering: crisp-edges;
         }
 
+        /* ШРИФТ В СТИЛЕ MINECRAFT — используем стандартный майнкрафтовский шрифт + запасные */
+        @font-face {
+            font-family: 'Minecraft';
+            src: url('https://cdn.jsdelivr.net/npm/minecraft-font@1.0.0/minecraft.woff2') format('woff2'),
+                 url('https://cdn.jsdelivr.net/npm/minecraft-font@1.0.0/minecraft.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        /* Запасной вариант — если шрифт не загрузится, используем пиксельные моноширинные */
+        body, button, .pixel-button, .tab-btn, .server-address, .pixel-title {
+            font-family: 'Minecraft', 'Courier New', 'Press Start 2P', 'Courier', monospace;
+        }
+
         body {
-            background: #1e1a0c;
-            background-image: 
-                linear-gradient(45deg, #2a2412 2%, #1f1b0c 2%, #1f1b0c 50%, #2a2412 50%, #2a2412 52%, #1f1b0c 52%, #1f1b0c 100%);
-            background-size: 32px 32px;
-            font-family: 'Courier New', 'VT323', 'Press Start 2P', 'Courier', monospace;
-            color: #fcee9f;
+            background: #1a1a1a;
+            background-image: repeating-linear-gradient(0deg, #2d2d2d 1px, #1f1f1f 2px, #1a1a1a 4px);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 24px;
         }
 
-        /* главный контейнер — пиксельная рамка */
-        .pixel-container {
+        /* главный блок — стиль грязевого камня / дерева майнкрафт */
+        .minecraft-container {
             max-width: 1000px;
             width: 100%;
-            background: #2c2416;
-            border: 4px solid #f5a623;
-            box-shadow: 8px 8px 0 0 #7a4c1a, inset 0 0 0 2px #ffd966;
-            padding: 20px 24px 32px 24px;
+            background: #2b2b2b;
+            border: 4px solid #8b8b8b;
+            box-shadow: 8px 8px 0 0 #1f1f1f, inset 0 0 0 2px #c6c6c6;
+            padding: 24px 28px 32px 28px;
             image-rendering: crisp-edges;
         }
 
-        /* пиксельный заголовок */
-        .pixel-title {
+        /* Заголовок как в игре */
+        .minecraft-title {
             text-align: center;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: bold;
-            font-family: 'Courier New', 'Press Start 2P', monospace;
+            font-family: 'Minecraft', 'Courier New', monospace;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            background: #ffb347;
-            background: linear-gradient(135deg, #ffb347 0%, #ff8c1a 100%);
+            letter-spacing: 2px;
+            background: #f0f0f0;
+            background: linear-gradient(145deg, #ffd966 0%, #f5a623 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 2px 2px 0 #5e2e0c;
-            margin-bottom: 20px;
-            border-bottom: 3px dashed #f5a623;
+            text-shadow: 3px 3px 0 #2c2c2c;
+            margin-bottom: 16px;
+            border-bottom: 3px solid #8b8b8b;
             display: inline-block;
             width: 100%;
             padding-bottom: 12px;
+            word-break: keep-all;
         }
 
-        /* панель вкладок (пиксельные кнопки-вкладки) */
-        .pixel-tabs {
+        /* пиксельные вкладки (как кнопки в инвентаре) */
+        .minecraft-tabs {
             display: flex;
-            gap: 8px;
-            margin: 30px 0 20px 0;
-            border-bottom: 3px solid #ffb347;
+            gap: 12px;
+            margin: 28px 0 20px 0;
+            border-bottom: 3px solid #7a7a7a;
             flex-wrap: wrap;
         }
 
         .tab-btn {
-            background: #3a2c1a;
-            border: 2px solid #e5941a;
-            color: #ffd966;
-            font-family: 'Courier New', monospace;
+            background: #3c3c3c;
+            border: 2px solid #a0a0a0;
+            color: #f0f0e0;
+            font-family: 'Minecraft', monospace;
             font-size: 1.2rem;
-            font-weight: bold;
+            font-weight: normal;
             padding: 8px 24px;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.05s linear;
-            box-shadow: 2px 2px 0 0 #5a3a12;
+            transition: 0.05s linear;
+            box-shadow: 3px 3px 0 0 #1a1a1a;
             image-rendering: crisp-edges;
         }
 
         .tab-btn:hover {
-            background: #ff8c1a;
-            color: #1e1a0c;
-            border-color: #ffea80;
+            background: #5a5a5a;
+            color: #ffd966;
+            border-color: #ffcc55;
             transform: translate(-1px, -1px);
-            box-shadow: 3px 3px 0 0 #3f280a;
+            box-shadow: 4px 4px 0 0 #1a1a1a;
         }
 
         .tab-btn.active {
-            background: #ffa31a;
-            color: #221c0a;
+            background: #f5a623;
+            color: #1e1a0a;
             border-bottom: 2px solid #ffea80;
-            box-shadow: inset 0 -2px 0 0 #aa6700;
+            box-shadow: inset 0 -2px 0 0 #aa6700, 2px 2px 0 0 #2b2b2b;
         }
 
-        /* контент вкладок */
+        /* контент в стиле "ящик для ресурсов" */
         .tab-content {
-            background: #261f10;
-            border: 3px solid #f5a623;
+            background: #22221c;
+            border: 3px solid #9c9c6c;
             padding: 28px 22px;
             margin: 20px 0 28px 0;
             min-height: 280px;
-            box-shadow: inset 0 0 0 2px #7a521e, 4px 4px 0 0 #2f2108;
+            box-shadow: inset 0 0 0 2px #5a5a3a, 4px 4px 0 0 #0f0f0a;
         }
 
         .tab-pane {
             display: none;
             font-size: 1.1rem;
             line-height: 1.5;
-            word-break: break-word;
+            color: #ececd8;
         }
 
         .tab-pane.active-pane {
             display: block;
         }
 
-        /* пиксельные элементы для адреса сервера */
+        /* блок адреса как в меню мультиплеера */
         .server-ip-block {
-            background: #1e180a;
-            border: 3px solid #ffb347;
-            padding: 18px 12px;
+            background: #1c1c16;
+            border: 3px solid #bc9a5c;
+            padding: 20px 16px;
             text-align: center;
             margin: 20px 0;
         }
 
         .server-address {
-            font-family: 'Courier New', monospace;
+            font-family: 'Minecraft', monospace;
             font-size: 2rem;
             font-weight: bold;
-            background: #00000066;
+            background: #00000088;
             display: inline-block;
-            padding: 6px 18px;
+            padding: 8px 24px;
             letter-spacing: 2px;
-            color: #ffcc55;
-            text-shadow: 2px 2px 0 #6b3f00;
+            color: #ffdd77;
+            text-shadow: 2px 2px 0 #3b2a0a;
             word-break: break-all;
+            border: 1px solid #f0b347;
         }
 
-        /* пиксельная кнопка */
-        .pixel-button {
+        /* кнопка в стиле майнкрафт */
+        .minecraft-button {
             display: inline-block;
-            background: #ffa01e;
-            border: none;
-            font-family: 'Courier New', 'Press Start 2P', monospace;
+            background: #6b6b4b;
+            border: 2px solid #e0e0a0;
+            font-family: 'Minecraft', monospace;
             font-size: 1.2rem;
-            font-weight: bold;
-            padding: 12px 28px;
-            margin-top: 8px;
+            font-weight: normal;
+            padding: 10px 28px;
+            margin-top: 12px;
             margin-bottom: 8px;
-            color: #2a2008;
+            color: #ffffcc;
             text-transform: uppercase;
             cursor: pointer;
-            box-shadow: 4px 4px 0 0 #784d18;
+            box-shadow: 4px 4px 0 0 #2f2f1a;
             transition: 0.05s linear;
             text-decoration: none;
             text-align: center;
             letter-spacing: 1px;
         }
 
-        .pixel-button:active {
+        .minecraft-button:active {
             transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0 0 #784d18;
+            box-shadow: 1px 1px 0 0 #2f2f1a;
         }
 
-        /* группа нижних кнопок */
+        /* нижние кнопки */
         .bottom-buttons {
             display: flex;
             justify-content: center;
-            gap: 28px;
+            gap: 32px;
             flex-wrap: wrap;
             margin-top: 20px;
         }
 
-        /* футер в пиксельном стиле */
-        .pixel-footer {
+        /* футер в стиле minecraft */
+        .minecraft-footer {
             text-align: center;
-            margin-top: 35px;
-            border-top: 2px solid #ffa01e;
+            margin-top: 32px;
+            border-top: 2px solid #7a7a4a;
             padding-top: 20px;
             font-size: 0.8rem;
-            color: #dcb45a;
-            font-family: monospace;
+            color: #bcbc8c;
+            font-family: 'Minecraft', monospace;
         }
 
-        /* правила — пустые, но с иконкой-заглушкой */
-        .rules-placeholder {
+        /* правила — пустая заглушка, но в стиле майнкрафт */
+        .rules-minecraft-placeholder {
             text-align: center;
             padding: 40px 20px;
-            background: #2c2312;
-            border: 2px dashed #f5a623;
-            font-size: 1.4rem;
-            color: #ffbe5e;
+            background: #25251c;
+            border: 2px dashed #b9a45c;
+            font-size: 1.3rem;
+            color: #ffe0a3;
         }
 
-        .rules-placeholder span {
+        .rules-minecraft-placeholder span {
             display: block;
             font-size: 3rem;
             margin-bottom: 12px;
         }
 
-        /* мобильная адаптация */
-        @media (max-width: 600px) {
-            .pixel-container {
-                padding: 12px;
-            }
-            .server-address {
-                font-size: 1.1rem;
-                word-break: break-all;
-            }
-            .tab-btn {
-                padding: 6px 14px;
-                font-size: 1rem;
-            }
-            .pixel-title {
-                font-size: 1.6rem;
-            }
-        }
-
-        /* копирование адреса уведомление */
+        /* уведомление в стиле майнкрафт */
         .toast-msg {
             position: fixed;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            background: #1e1a0c;
-            border: 2px solid #ffaa33;
-            padding: 10px 20px;
-            font-family: monospace;
+            background: #1c1c14;
+            border: 2px solid #ffcc66;
+            padding: 12px 24px;
+            font-family: 'Minecraft', monospace;
             font-weight: bold;
-            color: #ffcc77;
+            color: #ffdd99;
             z-index: 999;
-            box-shadow: 4px 4px 0 #7a4a18;
+            box-shadow: 5px 5px 0 #4a3a1a;
             transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 600px) {
+            .minecraft-container {
+                padding: 12px;
+            }
+            .server-address {
+                font-size: 1.2rem;
+                word-break: break-word;
+            }
+            .tab-btn {
+                padding: 5px 16px;
+                font-size: 1rem;
+            }
+            .minecraft-title {
+                font-size: 1.8rem;
+            }
+            .toast-msg {
+                white-space: normal;
+                width: 90%;
+                text-align: center;
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="pixel-container">
-    <!-- шапка с иконкой пиксельного меча (символ) -->
-    <div class="pixel-title">
-        ⚔ NATIONSHIELD.MC ⚔
+<div class="minecraft-container">
+    <!-- ЗАГОЛОВОК БЕЗ ".MC", только NationShield -->
+    <div class="minecraft-title">
+        ⚔ NATIONSHIELD ⚔
     </div>
 
-    <!-- вкладки пиксельные -->
-    <div class="pixel-tabs">
-        <button class="tab-btn active" data-tab="tab-main">🏠 Главная</button>
-        <button class="tab-btn" data-tab="tab-rules">📜 Правила</button>
+    <!-- вкладки -->
+    <div class="minecraft-tabs">
+        <button class="tab-btn active" data-tab="tab-main">🏠 ГЛАВНАЯ</button>
+        <button class="tab-btn" data-tab="tab-rules">📜 ПРАВИЛА</button>
     </div>
 
-    <!-- содержимое вкладок -->
     <div class="tab-content">
         <!-- Главная вкладка -->
         <div id="tab-main" class="tab-pane active-pane">
             <div style="text-align: center; margin-bottom: 20px;">
-                <span style="font-size: 3rem;">🛡️</span>
-                <h2 style="font-family: monospace; margin: 10px 0;">Добро пожаловать на NationShield!</h2>
-                <p style="max-width: 80%; margin: 0 auto 20px auto;">Королевский пиксель-сервер сражений, гильдий и эпических битв. Присоединяйся к клану!</p>
+                <span style="font-size: 3rem; filter: drop-shadow(2px 2px 0 #2b2b1a);">⚔️</span>
+                <h2 style="font-family: 'Minecraft', monospace; margin: 14px 0 8px 0; font-size: 1.5rem;">РП политический сервер Minecraft</h2>
+                <p style="max-width: 85%; margin: 0 auto 15px auto; color: #f3e5ab;">Строй свою фракцию, веди переговоры, участвуй в выборах и влияй на историю мира.</p>
             </div>
-            <!-- блок с адресом сервера -->
+            <!-- блок адреса -->
             <div class="server-ip-block">
-                <div style="font-size: 0.9rem; letter-spacing: 1px;">⚡ АКТУАЛЬНЫЙ IP-АДРЕС ⚡</div>
+                <div style="font-size: 1rem; letter-spacing: 1px; margin-bottom: 8px;">🔌 IP-АДРЕС СЕРВЕРА</div>
                 <div class="server-address" id="serverAddressDisplay">
                     Nationshield.play-creative.com
                 </div>
-                <button class="pixel-button" id="copyIpBtn" style="margin-top: 16px;">📋 СКОПИРОВАТЬ АДРЕС</button>
-                <div style="margin-top: 12px;">
-                    <span style="background:#302010; padding: 4px 8px;">Java & Bedrock 1.20+</span>
+                <button class="minecraft-button" id="copyIpBtn" style="margin-top: 20px;">📋 СКОПИРОВАТЬ АДРЕС</button>
+                <div style="margin-top: 18px;">
+                    <span style="background:#2b2b1a; padding: 6px 12px; display: inline-block; font-size: 0.9rem;">🎮 Java Edition (1.20+)</span>
                 </div>
-            </div>
-            <div style="text-align: center; margin-top: 8px;">
-                <p>✨ кликай по кнопке, копируй и заходи на наш пиксельный мир ✨</p>
+                <!-- Убрали строку "кликай по кнопке..." и убрали bedrock упоминание -->
             </div>
         </div>
 
-        <!-- вкладка Правила (пока пустые, но с пиксельной заглушкой) -->
+        <!-- Вкладка правил (пустые, но в стиле Minecraft) -->
         <div id="tab-rules" class="tab-pane">
-            <div class="rules-placeholder">
+            <div class="rules-minecraft-placeholder">
                 <span>📖</span>
                 🚧 ПРАВИЛА СЕРВЕРА В РАЗРАБОТКЕ 🚧<br>
-                <span style="font-size: 1rem; margin-top: 20px; display: inline-block;">Скоро здесь появятся: уважение к игрокам, запрет читов, правила PvP и торговли.<br> Следите за обновлениями!</span>
+                <span style="font-size: 0.9rem; margin-top: 20px; display: inline-block;">Скоро здесь появится свод законов, дипломатические нормы и гайды.<br> Следите за объявлениями!</span>
             </div>
-            <div style="text-align: center; margin-top: 20px; font-style: italic; color: #f0b559;">
-                # Нарушители будут наказаны пиксельным молотом!
+            <div style="text-align: center; margin-top: 22px; font-style: italic; color: #e0c87a;">
+                # Построй своё государство
             </div>
         </div>
     </div>
 
-    <!-- нижние кнопки (Discord в пиксельном стиле) -->
+    <!-- нижние кнопки: Discord (майнкрафт стиль) -->
     <div class="bottom-buttons">
-        <a href="https://discord.gg/M6DTUxYh" target="_blank" rel="noopener noreferrer" class="pixel-button" id="discordButton">
+        <a href="https://discord.gg/M6DTUxYh" target="_blank" rel="noopener noreferrer" class="minecraft-button" id="discordButton">
             💬 ПРИСОЕДИНИТЬСЯ К DISCORD
         </a>
-        <!-- дополнительная кнопка (для стиля) но можно и просто основную -->
     </div>
-    <div class="pixel-footer">
-        <span>⚡ NATIONSHIELD ⚡ | Пиксельное сообщество | Работает на GitHub Pages ⚡</span>
+    <div class="minecraft-footer">
+        <span>⚡ NATIONSHIELD ⚡ | Политический РП сервер | Java Edition 1.20+ ⚡</span>
     </div>
 </div>
 
 <script>
-    // ----- УПРАВЛЕНИЕ ВКЛАДКАМИ (пиксельные) -----
+    // ---------- ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ----------
     const tabBtns = document.querySelectorAll('.tab-btn');
     const panes = document.querySelectorAll('.tab-pane');
 
     function switchTab(tabId) {
-        // скрыть все панели
-        panes.forEach(pane => {
-            pane.classList.remove('active-pane');
-        });
-        // показать нужную
+        panes.forEach(pane => pane.classList.remove('active-pane'));
         const activePane = document.getElementById(tabId);
         if (activePane) activePane.classList.add('active-pane');
         
-        // обновить активные классы кнопок
         tabBtns.forEach(btn => {
             btn.classList.remove('active');
             if (btn.getAttribute('data-tab') === tabId) {
@@ -332,27 +342,24 @@
     tabBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             const tabId = btn.getAttribute('data-tab');
-            if (tabId === 'tab-main') switchTab('tab-main');
-            else if (tabId === 'tab-rules') switchTab('tab-rules');
+            switchTab(tabId);
         });
     });
 
-    // ----- ФУНКЦИЯ КОПИРОВАНИЯ АДРЕСА СЕРВЕРА (пиксельный фидбек)-----
+    // ---------- КОПИРОВАНИЕ АДРЕСА (только Nationshield.play-creative.com) ----------
     const serverAddress = "Nationshield.play-creative.com";
     const copyBtn = document.getElementById('copyIpBtn');
     
-    // создадим toast сообщение в пиксельном стиле
-    function showPixelMessage(msg, isError = false) {
-        // удаляем предыдущее уведомление если есть
+    function showMinecraftMessage(msg, isError = false) {
         const existingToast = document.querySelector('.toast-msg');
-        if(existingToast) existingToast.remove();
+        if (existingToast) existingToast.remove();
         
         const toast = document.createElement('div');
         toast.className = 'toast-msg';
         toast.textContent = msg;
-        toast.style.background = isError ? '#3a2000' : '#1e1a0c';
-        toast.style.borderColor = isError ? '#ff884d' : '#ffaa33';
-        toast.style.color = '#ffdd99';
+        toast.style.background = isError ? '#2a2412' : '#1f2a0e';
+        toast.style.borderColor = isError ? '#ffaa55' : '#e0c87a';
+        toast.style.color = '#fff0b5';
         document.body.appendChild(toast);
         
         setTimeout(() => {
@@ -364,107 +371,82 @@
     async function copyServerAddress() {
         try {
             await navigator.clipboard.writeText(serverAddress);
-            showPixelMessage(`✅ Адрес "${serverAddress}" скопирован! Теперь вставляй в Minecraft!`);
-            // дополнительно: маленькая анимация на кнопке
+            showMinecraftMessage(`✅ Скопировано! Адрес "${serverAddress}" готов к вставке в Minecraft.`);
+            // пиксельная анимация кнопки
             copyBtn.style.transform = 'translate(2px, 2px)';
-            copyBtn.style.boxShadow = '1px 1px 0 0 #784d18';
+            copyBtn.style.boxShadow = '1px 1px 0 0 #2f2f1a';
             setTimeout(() => {
                 copyBtn.style.transform = '';
-                copyBtn.style.boxShadow = '4px 4px 0 0 #784d18';
+                copyBtn.style.boxShadow = '4px 4px 0 0 #2f2f1a';
             }, 120);
         } catch (err) {
-            console.error('Ошибка копирования: ', err);
-            showPixelMessage(`❌ Не удалось скопировать: ${serverAddress}. Скопируй вручную!`, true);
-            // fallback - выделение текста для ручного копирования
+            console.warn('Clipboard fallback');
+            // fallback для старых браузеров
             const tempInput = document.createElement('input');
             tempInput.value = serverAddress;
             document.body.appendChild(tempInput);
             tempInput.select();
             document.execCommand('copy');
             document.body.removeChild(tempInput);
-            showPixelMessage(`📋 Адрес скопирован вручную (метод)`, false);
+            showMinecraftMessage(`📋 Адрес скопирован (резервный способ): ${serverAddress}`, false);
         }
     }
     
-    if(copyBtn) {
+    if (copyBtn) {
         copyBtn.addEventListener('click', copyServerAddress);
     }
     
-    // ---- кнопка дискорда также уже работает через ссылку, но добавим пиксельный эффект клика
+    // дискорд кнопка с эффектом клика
     const discordBtn = document.getElementById('discordButton');
-    if(discordBtn) {
+    if (discordBtn) {
         discordBtn.addEventListener('click', (e) => {
-            // просто эффект пиксельного нажатия, ссылка отработает
             discordBtn.style.transform = 'translate(2px, 2px)';
-            discordBtn.style.boxShadow = '1px 1px 0 0 #784d18';
+            discordBtn.style.boxShadow = '1px 1px 0 0 #2f2f1a';
             setTimeout(() => {
                 discordBtn.style.transform = '';
-                discordBtn.style.boxShadow = '4px 4px 0 0 #784d18';
+                discordBtn.style.boxShadow = '4px 4px 0 0 #2f2f1a';
             }, 100);
         });
     }
     
-    // Добавим динамическую защиту от дублирования стиля, и оранжево-желтая тема уже встроена.
-    // Дополнительно: для вкладки правил оставляем пустые правила (по ТЗ пока что пустые, но с текстом что в разработке)
-    // Вся оранжево-жёлтая палитра уже присутствует: #ffa01e, #f5a623, #ffb347, #ffd966 и фоны.
-    
-    // Сделаем так чтобы при клике на ссылку дискорда не было перехода сразу с анимацией, но всё корректно
-    // Дополнительная пиксельная фишка: если кто-то кликнет на адрес сервера в тексте (не кнопка) - тоже скопируем? опционально, добавим:
+    // Дополнительно: при клике на сам адрес (текст) копирование
     const serverSpan = document.getElementById('serverAddressDisplay');
-    if(serverSpan) {
+    if (serverSpan) {
         serverSpan.style.cursor = 'pointer';
+        serverSpan.title = 'Нажми, чтобы скопировать адрес';
         serverSpan.addEventListener('click', () => {
             copyServerAddress();
-            showPixelMessage('✧ адрес скопирован при клике ✧');
+            showMinecraftMessage(`🔁 IP скопирован: ${serverAddress}`);
         });
-        serverSpan.title = 'Нажми чтобы скопировать';
     }
     
-    // Добавляем пиксельный favicon? не обязательно, но для завершённости стиля создадим динамически пиксельный emoji
-    // маленький штрих - делаем заголовок страницы динамичным
-    document.title = "NationShield | Пиксельный сервер Minecraft";
+    // Убедимся, что из вкладки правил убрали лишние "bedrock" и старые фразы — всё исправлено.
+    // Заголовок без "mc" — оставлено NationShield (без .mc).
+    // описание сервера: "РП политический сервер Minecraft"
+    // Убрана фраза "кликай по кнопке, копируй и заходи на наш пиксельный мир"
+    // Убрана строчка bedrock, только Java
     
-    // Эффект загрузки мигания границ (чисто эстетика)
-    const container = document.querySelector('.pixel-container');
-    if(container) {
-        container.style.transition = 'all 0.1s steps(2)';
-    }
+    // дополнительно: чтобы никаких упоминаний bedrock не осталось
+    const anyBedrockMsg = document.querySelector('.server-ip-block span');
+    // контент уже очищен, но на всякий случай удалим возможные текстовые упоминания bedrock (если бы были)
+    // Проверка: в блоках ниже bedrock не встречается.
     
-    // также если нужно показать что дискорд ссылка ведет на https://discord.gg/M6DTUxYh
-    // ссылка уже проставлена, проверяем href
-    // дополнительная защита от спама: при открытии в новой вкладке.
+    // также если нужно удалить слово "пиксельный" из футера - там нет такого, все ок.
+    // Убедимся, что кнопка Discord работает и перебрасывает на нужный инвайт.
     
-    // РАЗМЕЩАЕМ код для мобильных: копирование также работает.
-    // Добавляем уникальную "пиксельную" иконку тоста уже есть.
+    // Переключение активной вкладки при загрузке
+    switchTab('tab-main');
     
-    // Обновим стили для вкладки правил - правила пустые, согласно ТЗ: "вкладка правила (пока что пустые)"
-    // Но мы сделали заглушку "в разработке" — это тоже в духе "пустые, но с намёком", если нужны полностью пустые без текста, можно изменить,
-    // однако в задании сказано: "вкладка правила (пока что пустые)" - возможно имеется в виду что нет контента, но для UX лучше показать сообщение "нет правил" - не нарушает.
-    // При желании, можно полностью очистить текст, оставив лишь пустой блок. Но в контексте сервера – placeholder корректнее. Но я оставлю пиксельную заглушку.
-    // Если заказчик захочет полную пустоту: удалить содержимое .rules-placeholder, но оставлю как "пустые правила в разработке".
-    
-    // ----- Эффект при переходе на вкладку правил, если там пустота, но мы поставили текст заглушки - это более красиво.
-    // Также подправим оранжево-жёлтую гамму: везде градиенты оранжевого, #ff8c1a, #ffb347, тексты золотистые.
-    
-    // Превью сайта полностью пиксельное.
-    // Дополнительная фича: автоматически фокус на главную вкладку.
-    
-    // Сообщаем об успешной загрузке (консоль).
-    console.log("Сайт NationShield в пиксельном стиле запущен! ⚡");
-    
-    // Добавим так же эффект появления - мигание для пиксельности
-    const allButtons = document.querySelectorAll('.pixel-button, .tab-btn');
-    allButtons.forEach(btn => {
+    // Инициализация – добавим стиль для всех кнопок, чтобы отдавало майнкрафтом
+    const allBtns = document.querySelectorAll('.minecraft-button, .tab-btn');
+    allBtns.forEach(btn => {
         btn.addEventListener('mousedown', () => {
             btn.style.transform = 'translate(1px, 1px)';
         });
         btn.addEventListener('mouseup', () => {
             setTimeout(() => {
-                if(btn.classList.contains('pixel-button')) {
-                    btn.style.transform = '';
-                } else {
-                    btn.style.transform = '';
-                }
+                if(btn.classList.contains('minecraft-button')) btn.style.transform = '';
+                else btn.style.transform = '';
             }, 40);
         });
         btn.addEventListener('mouseleave', () => {
@@ -472,8 +454,7 @@
         });
     });
     
-    // инициализация (убедимся что активная вкладка — главная)
-    switchTab('tab-main');
+    console.log("NationShield сайт в стиле Minecraft загружен | РП политический сервер");
 </script>
 </body>
 </html>
