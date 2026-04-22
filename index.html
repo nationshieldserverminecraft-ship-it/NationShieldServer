@@ -67,6 +67,103 @@
             pointer-events: none;
         }
 
+        /* ЭКРАН ЗАГРУЗКИ */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0e0f10;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+            backdrop-filter: blur(4px);
+        }
+        .loading-screen.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loading-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #e0b354;
+            box-shadow: 0 0 30px rgba(224, 179, 84, 0.5);
+            animation: pulseGlow 1.5s infinite;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 0 0 rgba(224, 179, 84, 0.4);
+                transform: scale(0.98);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(224, 179, 84, 0);
+                transform: scale(1.02);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(224, 179, 84, 0);
+                transform: scale(0.98);
+            }
+        }
+        .loading-text {
+            font-family: 'MinecraftPixel', monospace;
+            color: #e0b354;
+            font-size: 1rem;
+            letter-spacing: 4px;
+            margin-top: 20px;
+            animation: blinkText 1.5s step-end infinite;
+        }
+        @keyframes blinkText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .loading-progress {
+            width: 200px;
+            height: 2px;
+            background: #2b2d31;
+            margin-top: 20px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .loading-progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #e0b354;
+            transition: width 0.3s ease;
+        }
+
+        /* СКРЫТАЯ ВЕРСИЯ В НИЖНЕМ УГЛУ */
+        .version-hidden {
+            position: fixed;
+            bottom: 6px;
+            right: 8px;
+            font-size: 0.55rem;
+            color: rgba(109, 115, 124, 0.35);
+            font-family: 'MinecraftPixel', monospace;
+            z-index: 100;
+            letter-spacing: 0.5px;
+            cursor: default;
+            transition: opacity 0.2s;
+        }
+        .version-hidden:hover {
+            color: rgba(109, 115, 124, 0.7);
+        }
+
+        /* ОСНОВНОЙ КОНТЕНТ */
+        .main-content {
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        .main-content.visible {
+            opacity: 1;
+        }
+
         .discord-card {
             max-width: 1000px;
             width: 100%;
@@ -257,7 +354,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* ВИДЖЕТ МОНИТОРИНГА */
         .monitor-widget {
             background: #1a1b1e;
             border-radius: 16px;
@@ -318,7 +414,6 @@
             100% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* БЛОК СО СПИСКОМ ИГРОКОВ */
         .players-list {
             margin-top: 12px;
             padding-top: 10px;
@@ -354,30 +449,28 @@
             padding: 8px;
         }
 
-        .discord-action-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #5865f2;
-            border: none;
-            font-family: 'MinecraftPixel', monospace;
-            font-weight: normal;
-            font-size: 0.9rem;
-            padding: 0.7rem 1.8rem;
-            margin-top: 0.5rem;
-            color: white;
+        .discord-image-btn {
+            display: inline-block;
+            transition: all 0.15s ease;
             border-radius: 40px;
-            cursor: pointer;
-            transition: 0.15s;
-            text-decoration: none;
-            letter-spacing: 1px;
+            overflow: hidden;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
-        .discord-action-btn:hover {
-            background: #4752c4;
-            transform: translateY(-1px);
-            box-shadow: 0 5px 12px rgba(88, 101, 242, 0.3);
+        .discord-image-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(88, 101, 242, 0.4);
         }
+        .discord-image-btn:active {
+            transform: translateY(1px);
+        }
+        .discord-img {
+            display: block;
+            width: auto;
+            height: 48px;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+        }
+
         .bottom-group {
             display: flex;
             justify-content: center;
@@ -465,121 +558,261 @@
                 font-size: 0.6rem;
                 padding: 3px 8px;
             }
+            .discord-img {
+                height: 40px;
+            }
         }
     </style>
 </head>
 <body>
 
-<img src="https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/photo_2026-04-22_15-48-48.jpg" 
-     alt="NationShield" 
-     class="corner-logo"
-     title="NationShield">
+<!-- ЭКРАН ЗАГРУЗКИ -->
+<div class="loading-screen" id="loadingScreen">
+    <img src="https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/photo_2026-04-22_00-30-17%20(2).jpg" 
+         alt="Loading" 
+         class="loading-logo">
+    <div class="loading-text">ЗАГРУЗКА</div>
+    <div class="loading-progress">
+        <div class="loading-progress-bar" id="loadingBar"></div>
+    </div>
+</div>
 
-<div class="discord-card">
-    <div class="card-content">
-        <div class="site-header">
-            <div class="site-title">
-                NATIONSHIELD
-            </div>
-            <div class="sub-badge">
-                ПОЛИТИЧЕСКАЯ РОЛЕВАЯ ИГРА
-            </div>
-        </div>
+<!-- ОСНОВНОЙ КОНТЕНТ -->
+<div class="main-content" id="mainContent">
+    <!-- ЛОГОТИП (НА НЕГО БУДЕТ ЗВУК) -->
+    <img src="https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/photo_2026-04-22_15-48-48.jpg" 
+         alt="NationShield" 
+         class="corner-logo"
+         id="soundLogo"
+         title="NationShield">
 
-        <div class="discord-tabs">
-            <button class="tab-btn active" data-tab="main">Главная</button>
-            <button class="tab-btn" data-tab="rules">Правила</button>
-        </div>
-
-        <div class="content-panel">
-            <div id="main" class="tab-pane active-pane">
-                <div class="server-desc">
-                    РП политический сервер Minecraft
+    <div class="discord-card">
+        <div class="card-content">
+            <div class="site-header">
+                <div class="site-title">
+                    NATIONSHIELD
                 </div>
-
-                <div class="address-dark-card">
-                    <div class="ip-label">АКТУАЛЬНЫЙ АДРЕС</div>
-                    <div class="server-ip-clickable" id="clickableIp">
-                        Nationshield.play-creative.com
-                    </div>
-                    <div class="version-tag">
-                        Java Edition 1.21+
-                    </div>
-                    <div class="copy-hint">
-                        НАЖМИ НА АДРЕС, ЧТОБЫ СКОПИРОВАТЬ
-                    </div>
-                </div>
-
-                <!-- ВИДЖЕТ МОНИТОРИНГА СЕРВЕРА + СПИСОК ИГРОКОВ -->
-                <div class="monitor-widget" id="serverMonitor">
-                    <div class="monitor-label">СТАТУС СЕРВЕРА</div>
-                    <div class="monitor-status" id="monitorStatus">
-                        <span class="online-dot"></span>
-                        <span>ПРОВЕРКА...</span>
-                    </div>
-                    <div class="monitor-players" id="monitorPlayers">
-                        ЗАГРУЗКА ДАННЫХ...
-                    </div>
-                    <div class="monitor-version" id="monitorVersion"></div>
-                    
-                    <!-- БЛОК ДЛЯ СПИСКА ИГРОКОВ -->
-                    <div class="players-list" id="playersList" style="display: none;">
-                        <div class="players-title">ИГРОКИ ОНЛАЙН</div>
-                        <div class="players-names" id="playersNames"></div>
-                    </div>
-                </div>
-
-                <div style="text-align: center; font-size: 0.7rem; margin-top: 6px; color: #9ea3ac; font-family: 'MinecraftPixel', monospace;">
-                    Власть, дипломатия, интриги. Твой след в истории.
+                <div class="sub-badge">
+                    ПОЛИТИЧЕСКАЯ РОЛЕВАЯ ИГРА
                 </div>
             </div>
 
-            <div id="rules" class="tab-pane">
-                <div class="rules-placeholder-dark">
-                    Правила сервера в разработке<br>
-                    <span style="font-size: 0.7rem; display: block; margin-top: 10px;">Следите за обновлениями в Discord</span>
+            <div class="discord-tabs">
+                <button class="tab-btn active" data-tab="main" id="tabMainBtn">Главная</button>
+                <button class="tab-btn" data-tab="rules" id="tabRulesBtn">Правила</button>
+            </div>
+
+            <div class="content-panel">
+                <div id="main" class="tab-pane active-pane">
+                    <div class="server-desc">
+                        РП политический сервер Minecraft
+                    </div>
+
+                    <div class="address-dark-card">
+                        <div class="ip-label">АКТУАЛЬНЫЙ АДРЕС</div>
+                        <div class="server-ip-clickable" id="clickableIp">
+                            Nationshield.play-creative.com
+                        </div>
+                        <div class="version-tag">
+                            Java Edition 1.21+
+                        </div>
+                        <div class="copy-hint">
+                            НАЖМИ НА АДРЕС, ЧТОБЫ СКОПИРОВАТЬ
+                        </div>
+                    </div>
+
+                    <div class="monitor-widget" id="serverMonitor">
+                        <div class="monitor-label">СТАТУС СЕРВЕРА</div>
+                        <div class="monitor-status" id="monitorStatus">
+                            <span class="online-dot"></span>
+                            <span>ПРОВЕРКА...</span>
+                        </div>
+                        <div class="monitor-players" id="monitorPlayers">
+                            ЗАГРУЗКА ДАННЫХ...
+                        </div>
+                        <div class="monitor-version" id="monitorVersion"></div>
+                        
+                        <div class="players-list" id="playersList" style="display: none;">
+                            <div class="players-title">ИГРОКИ ОНЛАЙН</div>
+                            <div class="players-names" id="playersNames"></div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; font-size: 0.7rem; margin-top: 6px; color: #9ea3ac; font-family: 'MinecraftPixel', monospace;">
+                        Власть, дипломатия, интриги. Твой след в истории.
+                    </div>
+                </div>
+
+                <div id="rules" class="tab-pane">
+                    <div class="rules-placeholder-dark">
+                        Правила сервера в разработке<br>
+                        <span style="font-size: 0.7rem; display: block; margin-top: 10px;">Следите за обновлениями в Discord</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="bottom-group">
-            <a href="https://discord.gg/M6DTUxYh" target="_blank" rel="noopener noreferrer" class="discord-action-btn" id="discordInviteBtn">
-                ПРИСОЕДИНИТЬСЯ К DISCORD
-            </a>
-        </div>
+            <div class="bottom-group">
+                <a href="https://discord.gg/M6DTUxYh" target="_blank" rel="noopener noreferrer" class="discord-image-btn" id="discordImageLink">
+                    <img src="https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/discord-icon-light.nbGTyLYF.png" 
+                         alt="Discord" 
+                         class="discord-img"
+                         title="Присоединиться к Discord">
+                </a>
+            </div>
 
-        <div class="footer-dark">
-            NATIONSHIELD  ПОЛИТИЧЕСКАЯ РП  1.21+
+            <div class="footer-dark">
+                NATIONSHIELD  ПОЛИТИЧЕСКАЯ РП  1.21+
+            </div>
         </div>
     </div>
 </div>
 
-<script>
-    // УПРАВЛЕНИЕ ВКЛАДКАМИ
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    const panes = document.querySelectorAll('.tab-pane');
+<!-- СКРЫТАЯ ВЕРСИЯ -->
+<div class="version-hidden" id="versionText">v.2.2.0</div>
 
+<script>
+    // ========== ЗВУКИ ==========
+    // Создаём аудиоэлементы (они будут загружены, но не воспроизведены до клика)
+    const soundClick = new Audio('https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/off-button-on-table-lamp.mp3');
+    const soundLogo = new Audio('https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/nos-freddi.mp3');
+    
+    // Предзагрузка звуков (чтобы они сразу были готовы)
+    soundClick.preload = 'auto';
+    soundLogo.preload = 'auto';
+    
+    // Флаг для разблокировки звука (первое взаимодействие)
+    let audioUnlocked = false;
+    
+    // Функция разблокировки звука (нужна из-за политики браузеров)
+    function unlockAudio() {
+        if (audioUnlocked) return;
+        
+        // Создаём тихий "пустышку" для разблокировки
+        const silentTest = new Audio();
+        silentTest.play().then(() => {
+            silentTest.pause();
+            audioUnlocked = true;
+            console.log('Аудио разблокировано');
+        }).catch(e => console.log('Авто-разблокировка не сработала, ждём клика'));
+        
+        // Удаляем обработчик после первого клика по странице
+        document.removeEventListener('click', unlockAudio);
+        document.removeEventListener('touchstart', unlockAudio);
+    }
+    
+    // Ждём первого клика или касания пользователя для разблокировки звука
+    document.addEventListener('click', unlockAudio);
+    document.addEventListener('touchstart', unlockAudio);
+    
+    // Функция безопасного воспроизведения звука
+    function playSound(sound) {
+        if (!audioUnlocked) {
+            // Если звук ещё не разблокирован, пробуем разблокировать сейчас
+            unlockAudio();
+            // Не воспроизводим звук в этот раз, так как браузер может заблокировать
+            return;
+        }
+        
+        try {
+            // Останавливаем звук, если он уже играет, и перематываем на начало
+            sound.pause();
+            sound.currentTime = 0;
+            sound.play().catch(e => console.log('Ошибка воспроизведения:', e));
+        } catch(e) {
+            console.log('Ошибка воспроизведения:', e);
+        }
+    }
+    
+    // ========== НАВЕШИВАЕМ ЗВУКИ НА КНОПКИ ==========
+    
+    // 1. Логотип в левом углу (специальный звук nos-freddi)
+    const logoElement = document.getElementById('soundLogo');
+    if (logoElement) {
+        logoElement.addEventListener('click', (e) => {
+            playSound(soundLogo);
+            // Не блокируем другие действия (например, переход по ссылке, если она есть)
+        });
+    }
+    
+    // 2. Все кнопки вкладок
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            playSound(soundClick);
+        });
+    });
+    
+    // 3. Адрес сервера (кликабельный IP)
+    const ipClickable = document.getElementById('clickableIp');
+    if (ipClickable) {
+        ipClickable.addEventListener('click', () => {
+            playSound(soundClick);
+        });
+    }
+    
+    // 4. Кнопка Discord (изображение)
+    const discordBtn = document.getElementById('discordImageLink');
+    if (discordBtn) {
+        discordBtn.addEventListener('click', () => {
+            playSound(soundClick);
+        });
+    }
+    
+    // ========== АНИМАЦИЯ ЗАГРУЗКИ ==========
+    const loadingScreen = document.getElementById('loadingScreen');
+    const mainContent = document.getElementById('mainContent');
+    const loadingBar = document.getElementById('loadingBar');
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+            setTimeout(() => {
+                loadingScreen.classList.add('hide');
+                mainContent.classList.add('visible');
+            }, 300);
+        }
+        loadingBar.style.width = Math.min(progress, 100) + '%';
+    }, 200);
+    
+    setTimeout(() => {
+        if (progress < 100) {
+            clearInterval(interval);
+            loadingBar.style.width = '100%';
+            setTimeout(() => {
+                loadingScreen.classList.add('hide');
+                mainContent.classList.add('visible');
+            }, 300);
+        }
+    }, 4000);
+    
+    // ========== УПРАВЛЕНИЕ ВКЛАДКАМИ ==========
     function switchToTab(tabId) {
-        panes.forEach(pane => pane.classList.remove('active-pane'));
+        const allPanes = document.querySelectorAll('.tab-pane');
+        const allBtns = document.querySelectorAll('.tab-btn');
+        
+        allPanes.forEach(pane => pane.classList.remove('active-pane'));
         const targetPane = document.getElementById(tabId);
         if (targetPane) targetPane.classList.add('active-pane');
         
-        tabBtns.forEach(btn => {
+        allBtns.forEach(btn => {
             btn.classList.remove('active');
             if (btn.getAttribute('data-tab') === tabId) {
                 btn.classList.add('active');
             }
         });
     }
-
-    tabBtns.forEach(btn => {
+    
+    tabButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const tabId = btn.getAttribute('data-tab');
             switchToTab(tabId);
         });
     });
-
-    // КОПИРОВАНИЕ АДРЕСА
+    
+    // ========== КОПИРОВАНИЕ АДРЕСА ==========
     const serverAddress = "Nationshield.play-creative.com";
     const ipElement = document.getElementById('clickableIp');
     
@@ -627,8 +860,7 @@
         ipElement.title = 'Нажмите, чтобы скопировать IP';
     }
     
-    // ========== МОНИТОРИНГ СЕРВЕРА + СПИСОК ИГРОКОВ ==========
-    
+    // ========== МОНИТОРИНГ СЕРВЕРА ==========
     async function fetchServerStatus() {
         const statusDiv = document.getElementById('monitorStatus');
         const playersDiv = document.getElementById('monitorPlayers');
@@ -636,7 +868,6 @@
         const playersListBlock = document.getElementById('playersList');
         const playersNamesDiv = document.getElementById('playersNames');
         
-        // API, которые могут отдавать список игроков (если сервер поддерживает)
         const apis = [
             `https://api.mcsrvstat.us/2/${serverAddress}`,
             `https://api.mcstatus.io/v2/status/java/${serverAddress}`
@@ -648,12 +879,9 @@
             try {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 6000);
-                
                 const response = await fetch(apiUrl, { signal: controller.signal });
                 clearTimeout(timeoutId);
-                
                 if (!response.ok) continue;
-                
                 const data = await response.json();
                 
                 let online = false;
@@ -661,38 +889,24 @@
                 let version = '';
                 let playerList = [];
                 
-                // Формат mcsrvstat.us (иногда отдаёт список)
                 if (data.online !== undefined) {
                     online = data.online;
                     players = { online: data.players?.online || 0, max: data.players?.max || 0 };
                     version = data.version || '';
-                    if (data.players?.list && Array.isArray(data.players.list)) {
-                        playerList = data.players.list;
-                    }
+                    if (data.players?.list && Array.isArray(data.players.list)) playerList = data.players.list;
                 }
-                // Формат mcstatus.io (может отдавать список)
                 else if (data.online !== undefined && data.players) {
                     online = data.online;
                     players = { online: data.players.online || 0, max: data.players.max || 0 };
                     version = data.version?.name_clean || '';
-                    if (data.players.list && Array.isArray(data.players.list)) {
-                        playerList = data.players.list.map(p => p.name_clean || p);
-                    }
+                    if (data.players.list && Array.isArray(data.players.list)) playerList = data.players.list.map(p => p.name_clean || p);
                 }
                 
                 if (online) {
-                    statusDiv.innerHTML = `
-                        <span class="online-dot"></span>
-                        <span style="color: #4caf50;">СЕРВЕР РАБОТАЕТ</span>
-                    `;
+                    statusDiv.innerHTML = `<span class="online-dot"></span><span style="color: #4caf50;">СЕРВЕР РАБОТАЕТ</span>`;
                     playersDiv.innerHTML = `ИГРОКОВ ОНЛАЙН: ${players.online} ИЗ ${players.max}`;
-                    if (version) {
-                        versionDiv.innerHTML = `ВЕРСИЯ: ${version}`;
-                    } else {
-                        versionDiv.innerHTML = '';
-                    }
+                    versionDiv.innerHTML = version ? `ВЕРСИЯ: ${version}` : '';
                     
-                    // Отображаем список игроков, если есть
                     if (playerList.length > 0) {
                         playersListBlock.style.display = 'block';
                         playersNamesDiv.innerHTML = '';
@@ -703,38 +917,27 @@
                             playersNamesDiv.appendChild(nameSpan);
                         });
                     } else if (players.online > 0) {
-                        // Сервер онлайн, но API не отдал список (не поддерживается)
                         playersListBlock.style.display = 'block';
                         playersNamesDiv.innerHTML = '<div class="no-players">СПИСОК ИГРОКОВ НЕ ДОСТУПЕН</div>';
                     } else {
                         playersListBlock.style.display = 'block';
                         playersNamesDiv.innerHTML = '<div class="no-players">НИКОГО НЕТ ОНЛАЙН</div>';
                     }
-                    
                     success = true;
                     break;
                 }
-            } catch (error) {
-                console.log(`API ${apiUrl} не ответил:`, error);
-                continue;
-            }
+            } catch (error) { continue; }
         }
         
         if (!success) {
-            // Пробуем через прокси
             try {
                 const proxyUrl = `https://api.allorigins.win/raw?url=https://api.mcsrvstat.us/2/${serverAddress}`;
                 const response = await fetch(proxyUrl);
                 const data = await response.json();
-                
                 if (data && data.online === true) {
-                    statusDiv.innerHTML = `
-                        <span class="online-dot"></span>
-                        <span style="color: #4caf50;">СЕРВЕР РАБОТАЕТ</span>
-                    `;
+                    statusDiv.innerHTML = `<span class="online-dot"></span><span style="color: #4caf50;">СЕРВЕР РАБОТАЕТ</span>`;
                     playersDiv.innerHTML = `ИГРОКОВ ОНЛАЙН: ${data.players?.online || 0} ИЗ ${data.players?.max || 0}`;
                     versionDiv.innerHTML = data.version ? `ВЕРСИЯ: ${data.version}` : '';
-                    
                     const playerList = data.players?.list || [];
                     if (playerList.length > 0) {
                         playersListBlock.style.display = 'block';
@@ -754,35 +957,29 @@
                     }
                     success = true;
                 }
-            } catch (e) {
-                console.log('Прокси не сработал');
-            }
+            } catch (e) {}
         }
         
         if (!success) {
-            statusDiv.innerHTML = `
-                <span class="offline-dot"></span>
-                <span style="color: #ff9800;">НЕ УДАЛОСЬ ПРОВЕРИТЬ</span>
-            `;
+            statusDiv.innerHTML = `<span class="offline-dot"></span><span style="color: #ff9800;">НЕ УДАЛОСЬ ПРОВЕРИТЬ</span>`;
             playersDiv.innerHTML = 'ПРОВЕРЬТЕ ПОДКЛЮЧЕНИЕ К ИНТЕРНЕТУ';
             versionDiv.innerHTML = '';
             playersListBlock.style.display = 'none';
         }
     }
     
-    // Запускаем мониторинг
     fetchServerStatus();
     setInterval(fetchServerStatus, 45000);
     
-    const discordBtn = document.getElementById('discordInviteBtn');
-    if (discordBtn) {
-        discordBtn.addEventListener('click', () => {
-            discordBtn.style.transform = 'scale(0.97)';
-            setTimeout(() => {
-                discordBtn.style.transform = '';
-            }, 120);
-        });
+    // Обновление скрытой версии
+    function updateVersion() {
+        const now = new Date();
+        const buildNum = Math.floor(now.getTime() / 1000) % 10000;
+        const versionElement = document.getElementById('versionText');
+        if (versionElement) versionElement.textContent = `v.2.2.${buildNum}`;
     }
+    updateVersion();
+    setInterval(updateVersion, 300000);
 </script>
 </body>
 </html>
