@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>NationShield | Заявка на вступление</title>
+    <title>NationShield | РП политический сервер 1.21+</title>
     <style>
         /* ---------- ТЁМНЫЙ СТИЛЬ + ПИКСЕЛЬНЫЙ ШРИФТ ---------- */
         * {
@@ -99,6 +99,20 @@
         @keyframes blinkText {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.4; }
+        }
+        .loading-progress {
+            width: 200px;
+            height: 2px;
+            background: #2b2d31;
+            margin-top: 20px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .loading-progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #e0b354;
+            transition: width 0.3s ease;
         }
 
         .main-content {
@@ -201,8 +215,14 @@
             display: block;
         }
         @keyframes fadeSlide {
-            0% { opacity: 0; transform: translateY(8px); }
-            100% { opacity: 1; transform: translateY(0); }
+            0% {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* БЛОК СТАТУСА */
@@ -400,7 +420,7 @@
             width: 18px;
             height: 18px;
             cursor: pointer;
-            accent-color: #5865f2;
+            accent-color: #e0b354;
         }
         .checkbox-group label {
             font-size: 0.7rem;
@@ -409,68 +429,91 @@
             margin: 0;
         }
         .checkbox-group a {
-            color: #5865f2;
+            color: #e0b354;
             text-decoration: none;
-            border-bottom: 1px solid #5865f2;
+            border-bottom: 1px solid #e0b354;
         }
         .checkbox-group a:hover {
-            color: #7983f5;
+            color: #f0c674;
         }
         
         .warning-text {
-            font-size: 0.6rem;
-            color: #f44336;
+            background: rgba(224, 179, 84, 0.1);
+            border-left: 3px solid #e0b354;
+            padding: 10px 12px;
+            font-size: 0.65rem;
+            color: #e0b354;
             text-align: center;
             margin-top: 8px;
             margin-bottom: 12px;
-            padding: 6px;
-            background: rgba(244, 67, 54, 0.1);
             border-radius: 8px;
         }
         
         .cooldown-text {
-            font-size: 0.7rem;
-            color: #ff9800;
+            background: rgba(224, 179, 84, 0.1);
+            border-left: 3px solid #e0b354;
+            padding: 10px 12px;
+            font-size: 0.65rem;
+            color: #e0b354;
             text-align: center;
             margin-top: 8px;
             margin-bottom: 12px;
-            padding: 8px;
-            background: rgba(255, 152, 0, 0.1);
             border-radius: 8px;
         }
         
         .submit-btn {
-            background: #5865f2;
+            background: #e0b354;
             border: none;
             padding: 10px 20px;
             border-radius: 40px;
-            color: white;
+            color: #0e0f10;
             font-family: 'MinecraftPixel', monospace;
             cursor: pointer;
             width: 100%;
             transition: all 0.2s;
         }
         .submit-btn:hover {
-            background: #4752c4;
+            background: #f0c674;
             transform: translateY(-2px);
         }
         .submit-btn:disabled {
             background: #3b3f48;
+            color: #6d737c;
             cursor: not-allowed;
             transform: none;
         }
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e1f22;
-            border: 1px solid #e0b354;
-            border-radius: 40px;
+        
+        .action-btn {
+            background: #e0b354;
+            border: none;
             padding: 10px 20px;
-            font-size: 0.8rem;
-            color: #e0b354;
-            z-index: 1000;
+            border-radius: 40px;
+            color: #0e0f10;
+            font-family: 'MinecraftPixel', monospace;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+        }
+        .action-btn:hover {
+            background: #f0c674;
+            transform: translateY(-2px);
+        }
+        
+        .logout-btn {
+            background: #4a4a4a;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: #dbdee1;
+            cursor: pointer;
+            font-family: 'MinecraftPixel', monospace;
+            font-size: 0.65rem;
+            transition: all 0.3s ease;
+        }
+        .logout-btn:hover {
+            background: #5a5a5a;
+            transform: translateY(-2px);
         }
 
         .footer-dark {
@@ -489,6 +532,37 @@
             color: rgba(109, 115, 124, 0.4);
             z-index: 100;
         }
+        
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e1f22;
+            border: 1px solid #e0b354;
+            border-radius: 40px;
+            padding: 0.6rem 1.6rem;
+            font-family: 'MinecraftPixel', monospace;
+            font-size: 0.7rem;
+            color: #e0b354;
+            z-index: 999;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+        
+        .toast.error {
+            border-color: #f44336;
+            color: #f44336;
+        }
+        
+        .toast.success {
+            border-color: #4caf50;
+            color: #4caf50;
+        }
+        
         @media (max-width: 650px) {
             body { padding: 0.8rem; }
             .site-title { font-size: 1.8rem; }
@@ -496,6 +570,7 @@
             .status-value { font-size: 1.2rem; }
             .status-grid { flex-direction: column; gap: 0.8rem; }
             .form-row { flex-direction: column; gap: 0.8rem; }
+            .toast { white-space: normal; width: 85%; text-align: center; }
         }
     </style>
 </head>
@@ -504,6 +579,9 @@
 <div class="loading-screen" id="loadingScreen">
     <img src="https://raw.githubusercontent.com/nationshieldserverminecraft-ship-it/NationShieldServer/main/photo_2026-04-22_00-30-17%20(2).jpg" class="loading-logo">
     <div class="loading-text">ЗАГРУЗКА</div>
+    <div class="loading-progress">
+        <div class="loading-progress-bar" id="loadingBar"></div>
+    </div>
 </div>
 
 <div class="main-content" id="mainContent">
@@ -517,13 +595,12 @@
             </div>
 
             <div class="discord-tabs">
-                <button class="tab-btn active" data-tab="main">Главная</button>
-                <button class="tab-btn" data-tab="anketa">Анкета</button>
-                <button class="tab-btn" data-tab="rules">Правила</button>
+                <button class="tab-btn active" data-tab="main">ГЛАВНАЯ</button>
+                <button class="tab-btn" data-tab="anketa">АНКЕТА</button>
+                <button class="tab-btn" data-tab="rules">ПРАВИЛА</button>
             </div>
 
             <div class="content-panel">
-                <!-- ГЛАВНАЯ ВКЛАДКА -->
                 <div id="main" class="tab-pane active-pane">
                     <div class="server-desc">РП политический сервер Minecraft</div>
 
@@ -554,28 +631,30 @@
                     </div>
                 </div>
 
-                <!-- АНКЕТА -->
                 <div id="anketa" class="tab-pane">
-                    <!-- Блок регистрации / входа -->
                     <div id="authBlock">
                         <div class="form-group">
-                            <label>ВАШ НИКНЕЙМ (ЛОГИН)</label>
-                            <input type="text" id="loginNick" placeholder="Ваш никнейм">
+                            <label>EMAIL</label>
+                            <input type="email" id="loginEmail" placeholder="Ваш email">
+                        </div>
+                        <div class="form-group">
+                            <label>ЛОГИН (НИКНЕЙМ)</label>
+                            <input type="text" id="loginUsername" placeholder="Ваш никнейм">
                         </div>
                         <div class="form-group">
                             <label>ПАРОЛЬ</label>
-                            <input type="password" id="loginPassword" placeholder="Придумайте пароль (минимум 4 символа)">
+                            <input type="password" id="loginPassword" placeholder="Пароль (минимум 4 символа)">
                         </div>
                         <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                            <button id="registerBtn" class="submit-btn" style="background: #4caf50;">🔐 ЗАРЕГИСТРИРОВАТЬСЯ</button>
-                            <button id="loginBtn" class="submit-btn" style="background: #2196f3;">🔓 ВОЙТИ</button>
+                            <button id="registerBtn" class="action-btn">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+                            <button id="loginBtn" class="action-btn">ВОЙТИ</button>
                         </div>
                     </div>
 
-                    <!-- Форма анкеты (скрыта до авторизации) -->
                     <div id="anketaFormBlock" style="display: none;">
-                        <div id="userInfo" style="background: #1a1b1e; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
-                            👤 Вы вошли как <span id="currentUser"></span>
+                        <div id="userInfo" style="background: #1a1b1e; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; font-family: 'MinecraftPixel', monospace; font-size: 0.7rem;">
+                            ВЫ ВОШЛИ КАК <span id="currentUser" style="color:#e0b354;"></span>
+                            <button id="logoutBtn" class="logout-btn" style="margin-left: 15px;">ВЫЙТИ</button>
                         </div>
                         
                         <div id="cooldownBlock" class="cooldown-text" style="display: none;"></div>
@@ -585,39 +664,36 @@
                                 <label>ИГРОВОЙ НИКНЕЙМ</label>
                                 <input type="text" id="minecraftNick" required placeholder="Ваш ник в Minecraft">
                             </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>DISCORD <span class="optional">(никнейм или ID)</span></label>
-                                    <input type="text" id="discord" placeholder="username#0000">
-                                </div>
-                                <div class="form-group">
-                                    <label>TELEGRAM <span class="optional">(никнейм)</span></label>
-                                    <input type="text" id="telegram" placeholder="@username">
-                                </div>
+                            <div class="form-group">
+                                <label>DISCORD <span class="optional">(никнейм или ID)</span></label>
+                                <input type="text" id="discord" placeholder="username#0000">
+                            </div>
+                            <div class="form-group">
+                                <label>TELEGRAM <span class="optional">(никнейм)</span></label>
+                                <input type="text" id="telegram" placeholder="@username">
                             </div>
                             
                             <div class="checkbox-group">
                                 <input type="checkbox" id="discordSubscribe" required>
                                 <label for="discordSubscribe">
-                                    ✅ Я подписан на <a href="https://discord.gg/vGaF7awwNB" target="_blank">Discord сервер NationShield</a> и прочитал правила
+                                    Я ПОДПИСАН НА <a href="https://discord.gg/vGaF7awwNB" target="_blank">DISCORD СЕРВЕР NATIONSHIELD</a> И ПРОЧИТАЛ ПРАВИЛА
                                 </label>
                             </div>
                             
                             <div class="warning-text">
-                                ⚠️ БЕЗ ПОДПИСКИ НА DISCORD ЗАЯВКА БУДЕТ ОТКЛОНЕНА!
+                                БЕЗ ПОДПИСКИ НА DISCORD ЗАЯВКА БУДЕТ ОТКЛОНЕНА
                             </div>
                             
-                            <button type="submit" class="submit-btn" id="anketaSubmitBtn">📨 ОТПРАВИТЬ ЗАЯВКУ</button>
+                            <button type="submit" class="submit-btn" id="anketaSubmitBtn">ОТПРАВИТЬ ЗАЯВКУ</button>
                         </form>
                     </div>
                 </div>
 
-                <!-- ПРАВИЛА -->
                 <div id="rules" class="tab-pane">
                     <div style="text-align:center; margin-bottom:1rem;">
                         <h2 style="font-size:1.2rem; color:#e0b354;">ПРАВИЛА NATIONSHIELD</h2>
                     </div>
-                    <div style="background:#1e1f22; padding:0.5rem; text-align:center; margin-bottom:1rem;">ЗАПРЕЩЕНО!</div>
+                    <div class="warning-text" style="margin-bottom:1rem;">ЗАПРЕЩЕНО</div>
                     <ul style="list-style:none; padding-left:0.5rem;">
                         <li style="margin-bottom:0.8rem; border-left:2px solid #e0b354; padding-left:0.8rem;"><strong>1.1</strong> - Спам реклама, Флуд.</li>
                         <li style="margin-bottom:0.8rem; border-left:2px solid #e0b354; padding-left:0.8rem;"><strong>1.2</strong> - 18+ контент: Ссылки на 18+ сайты, пиксель арты и тд</li>
@@ -636,94 +712,139 @@
     </div>
 </div>
 
-<div class="version-hidden" id="versionText">v3.3</div>
+<div class="version-hidden" id="versionText">v4.0</div>
 
 <script>
-    // ========== ВЕБХУК DISCORD ==========
+    // ========== НАСТРОЙКИ ==========
+    const JSONBIN_BIN_ID = "69eb0f90aaba882197310951";
+    const JSONBIN_API_KEY = "$2a$10$fbO1e/jkjaUXf51MQ3MROuFBtReAgofzV8SnwMMaRBMoJAp9eGlEu";
     const WEBHOOK_URL = "https://discord.com/api/webhooks/1496602268030472205/ASbXtHZpYYXnewToI1uxbPhrmejEvdO6bow7TicNeLFxOEADJNrt1aEyhpnpIHcEu6Rv";
-
-    // ========== ОГРАНИЧЕНИЕ: 4 ЧАСА (14400000 мс) ==========
     const COOLDOWN_MS = 4 * 60 * 60 * 1000;
 
-    // ========== СИСТЕМА РЕГИСТРАЦИИ ==========
     let currentUser = null;
-    let users = {};
+    let usersArray = [];
 
-    // Загрузка пользователей из localStorage
-    function loadUsers() {
-        const saved = localStorage.getItem('nationShield_users');
-        if (saved) {
-            users = JSON.parse(saved);
+    async function loadUsersFromCloud() {
+        try {
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                headers: { 'X-Master-Key': JSONBIN_API_KEY }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                if (data.record && Array.isArray(data.record.users)) {
+                    usersArray = data.record.users;
+                }
+            }
+        } catch (error) {}
+        
+        const savedUser = localStorage.getItem('nationShield_currentUser');
+        if (savedUser && usersArray.find(u => u.username === savedUser)) {
+            currentUser = savedUser;
         }
+        updateUIForUser();
     }
 
-    // Сохранение пользователей
-    function saveUsers() {
-        localStorage.setItem('nationShield_users', JSON.stringify(users));
+    async function saveUsersToCloud() {
+        try {
+            await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSONBIN_API_KEY
+                },
+                body: JSON.stringify({ users: usersArray })
+            });
+        } catch (error) {}
     }
 
-    // Проверка кулдауна
+    function findUserByUsername(username) {
+        return usersArray.find(u => u.username === username);
+    }
+
+    function findUserByEmail(email) {
+        return usersArray.find(u => u.email === email);
+    }
+
     function getCooldownRemaining(username) {
-        if (!users[username] || !users[username].lastApply) return 0;
-        const elapsed = Date.now() - users[username].lastApply;
+        const user = findUserByUsername(username);
+        if (!user || !user.lastApply) return 0;
+        const elapsed = Date.now() - user.lastApply;
         if (elapsed >= COOLDOWN_MS) return 0;
         return COOLDOWN_MS - elapsed;
     }
 
-    // Обновление времени последней заявки
-    function updateLastApply(username) {
-        if (users[username]) {
-            users[username].lastApply = Date.now();
-            saveUsers();
+    async function updateLastApply(username) {
+        const user = findUserByUsername(username);
+        if (user) {
+            user.lastApply = Date.now();
+            await saveUsersToCloud();
         }
     }
 
-    // Регистрация
-    function register(username, password) {
+    async function register(email, username, password) {
+        if (!email || email.indexOf('@') === -1) {
+            showToast('ВВЕДИТЕ КОРРЕКТНЫЙ EMAIL', 'error');
+            return false;
+        }
         if (username.length < 3) {
-            showToast('❌ Никнейм должен быть не менее 3 символов!');
+            showToast('НИКНЕЙМ ДОЛЖЕН БЫТЬ НЕ МЕНЕЕ 3 СИМВОЛОВ', 'error');
             return false;
         }
         if (password.length < 4) {
-            showToast('❌ Пароль должен быть не менее 4 символов!');
+            showToast('ПАРОЛЬ ДОЛЖЕН БЫТЬ НЕ МЕНЕЕ 4 СИМВОЛОВ', 'error');
             return false;
         }
-        if (users[username]) {
-            showToast('❌ Пользователь с таким ником уже существует!');
+        if (findUserByUsername(username)) {
+            showToast('ПОЛЬЗОВАТЕЛЬ С ТАКИМ НИКОМ УЖЕ СУЩЕСТВУЕТ', 'error');
             return false;
         }
-        users[username] = { password: password, lastApply: null };
-        saveUsers();
-        showToast('✅ Регистрация успешна! Теперь войдите.');
+        if (findUserByEmail(email)) {
+            showToast('ПОЛЬЗОВАТЕЛЬ С ТАКИМ EMAIL УЖЕ СУЩЕСТВУЕТ', 'error');
+            return false;
+        }
+        
+        const now = new Date();
+        const formattedDate = `${now.getDate().toString().padStart(2,'0')}.${(now.getMonth()+1).toString().padStart(2,'0')}.${now.getFullYear()}, ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+        
+        usersArray.push({
+            email: email,
+            username: username,
+            password: password,
+            registeredAt: formattedDate,
+            lastApply: null
+        });
+        await saveUsersToCloud();
+        showToast('РЕГИСТРАЦИЯ УСПЕШНА. ТЕПЕРЬ ВОЙДИТЕ.', 'success');
         return true;
     }
 
-    // Вход
-    function login(username, password) {
-        if (!users[username]) {
-            showToast('❌ Пользователь не найден!');
+    async function login(usernameOrEmail, password) {
+        let user = findUserByUsername(usernameOrEmail);
+        if (!user) user = findUserByEmail(usernameOrEmail);
+        
+        if (!user) {
+            showToast('ПОЛЬЗОВАТЕЛЬ НЕ НАЙДЕН', 'error');
             return false;
         }
-        if (users[username].password !== password) {
-            showToast('❌ Неверный пароль!');
+        if (user.password !== password) {
+            showToast('НЕВЕРНЫЙ ПАРОЛЬ', 'error');
             return false;
         }
-        currentUser = username;
-        localStorage.setItem('nationShield_currentUser', username);
-        showToast(`✅ Добро пожаловать, ${username}!`);
+        
+        currentUser = user.username;
+        localStorage.setItem('nationShield_currentUser', currentUser);
+        showToast(`ДОБРО ПОЖАЛОВАТЬ, ${currentUser}`, 'success');
         updateUIForUser();
         return true;
     }
 
-    // Выход
     function logout() {
         currentUser = null;
         localStorage.removeItem('nationShield_currentUser');
-        showToast('👋 Вы вышли из аккаунта');
+        showToast('ВЫ ВЫШЛИ ИЗ АККАУНТА', 'info');
         updateUIForUser();
     }
 
-    // Обновление интерфейса после входа/выхода
     function updateUIForUser() {
         const authBlock = document.getElementById('authBlock');
         const anketaBlock = document.getElementById('anketaFormBlock');
@@ -734,7 +855,6 @@
             anketaBlock.style.display = 'block';
             currentUserSpan.textContent = currentUser;
             
-            // Проверяем кулдаун
             const remaining = getCooldownRemaining(currentUser);
             const cooldownBlock = document.getElementById('cooldownBlock');
             const anketaForm = document.getElementById('anketaForm');
@@ -744,7 +864,7 @@
                 const hours = Math.floor(remaining / 3600000);
                 const minutes = Math.floor((remaining % 3600000) / 60000);
                 cooldownBlock.style.display = 'block';
-                cooldownBlock.innerHTML = `⏰ Вы уже отправляли заявку! Следующую можно отправить через ${hours} ч ${minutes} мин.`;
+                cooldownBlock.innerHTML = `ВЫ УЖЕ ОТПРАВЛЯЛИ ЗАЯВКУ. СЛЕДУЮЩУЮ МОЖНО ОТПРАВИТЬ ЧЕРЕЗ ${hours} Ч ${minutes} МИН.`;
                 anketaForm.style.opacity = '0.5';
                 submitBtn.disabled = true;
             } else {
@@ -755,16 +875,15 @@
         } else {
             authBlock.style.display = 'block';
             anketaBlock.style.display = 'none';
-            // Очищаем поля входа/регистрации
-            document.getElementById('loginNick').value = '';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginUsername').value = '';
             document.getElementById('loginPassword').value = '';
         }
     }
 
-    // ========== ОТПРАВКА АНКЕТЫ ==========
     async function sendApplication() {
         if (!currentUser) {
-            showToast('❌ Сначала войдите в аккаунт!');
+            showToast('СНАЧАЛА ВОЙДИТЕ В АККАУНТ', 'error');
             return false;
         }
         
@@ -772,7 +891,7 @@
         if (remaining > 0) {
             const hours = Math.floor(remaining / 3600000);
             const minutes = Math.floor((remaining % 3600000) / 60000);
-            showToast(`❌ Подождите ${hours} ч ${minutes} мин перед следующей заявкой!`);
+            showToast(`ПОДОЖДИТЕ ${hours} Ч ${minutes} МИН ПЕРЕД СЛЕДУЮЩЕЙ ЗАЯВКОЙ`, 'error');
             return false;
         }
 
@@ -782,34 +901,34 @@
         const subscribeCheckbox = document.getElementById('discordSubscribe');
 
         if (!minecraftNick) {
-            showToast('❌ Укажите ваш игровой никнейм!');
+            showToast('УКАЖИТЕ ВАШ ИГРОВОЙ НИКНЕЙМ', 'error');
             return false;
         }
         
         if (!discord && !telegram) {
-            showToast('❌ Укажите хотя бы один контакт (Discord или Telegram)!');
+            showToast('УКАЖИТЕ ХОТЯ БЫ ОДИН КОНТАКТ (DISCORD ИЛИ TELEGRAM)', 'error');
             return false;
         }
         
         if (!subscribeCheckbox.checked) {
-            showToast('❌ Подтвердите подписку на Discord сервер!');
+            showToast('ПОДТВЕРДИТЕ ПОДПИСКУ НА DISCORD СЕРВЕР', 'error');
             return false;
         }
 
         let messageText = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-        messageText += `🎮 НОВАЯ ЗАЯВКА НА ВСТУПЛЕНИЕ\n`;
+        messageText += `НОВАЯ ЗАЯВКА НА ВСТУПЛЕНИЕ\n`;
         messageText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-        messageText += `🎮 НИКНЕЙМ › ${minecraftNick}\n`;
-        if (discord) messageText += `💬 DISCORD › ${discord}\n`;
-        if (telegram) messageText += `📱 TELEGRAM › ${telegram}\n`;
+        messageText += `НИКНЕЙМ: ${minecraftNick}\n`;
+        if (discord) messageText += `DISCORD: ${discord}\n`;
+        if (telegram) messageText += `TELEGRAM: ${telegram}\n`;
         messageText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-        messageText += `✅ ПОДПИСАН НА DISCORD: ДА\n`;
+        messageText += `ПОДПИСАН НА DISCORD: ДА\n`;
         messageText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-        messageText += `🕐 ОТПРАВЛЕНО › ${new Date().toLocaleString()}\n`;
+        messageText += `ОТПРАВЛЕНО: ${new Date().toLocaleString()}\n`;
         messageText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-        messageText += `👤 АККАУНТ: ${currentUser}\n`;
+        messageText += `АККАУНТ: ${currentUser}\n`;
         messageText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-        messageText += `⚠️ ЕСЛИ НЕ ПОДПИСАН - ЗАЯВКА БУДЕТ ОТКЛОНЕНА!`;
+        messageText += `ЕСЛИ НЕ ПОДПИСАН - ЗАЯВКА БУДЕТ ОТКЛОНЕНА`;
 
         try {
             const response = await fetch(WEBHOOK_URL, {
@@ -819,64 +938,56 @@
             });
 
             if (response.ok) {
-                showToast('✅ Заявка отправлена! Администрация проверит подписку.');
-                updateLastApply(currentUser);
+                showToast('ЗАЯВКА ОТПРАВЛЕНА. АДМИНИСТРАЦИЯ ПРОВЕРИТ ПОДПИСКУ.', 'success');
+                await updateLastApply(currentUser);
                 updateUIForUser();
                 document.getElementById('anketaForm').reset();
                 return true;
             } else {
-                showToast('❌ Ошибка отправки. Попробуйте позже.');
+                showToast('ОШИБКА ОТПРАВКИ. ПОПРОБУЙТЕ ПОЗЖЕ.', 'error');
                 return false;
             }
         } catch (error) {
-            showToast('❌ Ошибка соединения.');
+            showToast('ОШИБКА СОЕДИНЕНИЯ.', 'error');
             return false;
         }
     }
 
-    // ========== ОСТАЛЬНОЙ КОД ==========
-    function showToast(msg) {
+    function showToast(msg, type = 'info') {
         const toast = document.createElement('div');
-        toast.className = 'toast';
+        toast.className = `toast ${type}`;
         toast.textContent = msg;
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 4000);
     }
 
-    // Инициализация
-    loadUsers();
-    const savedUser = localStorage.getItem('nationShield_currentUser');
-    if (savedUser && users[savedUser]) {
-        currentUser = savedUser;
+    async function init() {
+        await loadUsersFromCloud();
+        
+        document.getElementById('registerBtn').onclick = async () => {
+            const email = document.getElementById('loginEmail').value.trim();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            await register(email, username, password);
+        };
+        
+        document.getElementById('loginBtn').onclick = async () => {
+            const loginInput = document.getElementById('loginEmail').value.trim() || document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            await login(loginInput, password);
+        };
+        
+        document.getElementById('logoutBtn').onclick = () => logout();
+        
+        document.getElementById('anketaForm').onsubmit = async (e) => {
+            e.preventDefault();
+            await sendApplication();
+        };
     }
-    updateUIForUser();
 
-    // Кнопки регистрации и входа
-    document.getElementById('registerBtn').addEventListener('click', () => {
-        const nick = document.getElementById('loginNick').value.trim();
-        const pass = document.getElementById('loginPassword').value;
-        if (register(nick, pass)) {
-            document.getElementById('loginNick').value = '';
-            document.getElementById('loginPassword').value = '';
-        }
-    });
+    init();
 
-    document.getElementById('loginBtn').addEventListener('click', () => {
-        const nick = document.getElementById('loginNick').value.trim();
-        const pass = document.getElementById('loginPassword').value;
-        if (login(nick, pass)) {
-            document.getElementById('loginNick').value = '';
-            document.getElementById('loginPassword').value = '';
-        }
-    });
-
-    // Отправка анкеты
-    document.getElementById('anketaForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await sendApplication();
-    });
-
-    // Переключение вкладок
+    // ========== ВКЛАДКИ ==========
     const tabs = document.querySelectorAll('.tab-btn');
     const panes = document.querySelectorAll('.tab-pane');
     tabs.forEach(btn => {
@@ -889,17 +1000,17 @@
         });
     });
 
-    // Копирование адреса
+    // ========== КОПИРОВАНИЕ АДРЕСА ==========
     const serverAddress = "Nationshield.play-creative.com";
     const ipElement = document.getElementById('clickableIp');
     async function copyServerIp() {
         try {
             await navigator.clipboard.writeText(serverAddress);
-            showToast(`✅ Скопировано: ${serverAddress}`);
+            showToast(`СКОПИРОВАНО: ${serverAddress}`, 'success');
             ipElement.style.transform = 'scale(0.97)';
             setTimeout(() => ipElement.style.transform = '', 120);
         } catch (err) {
-            showToast(`❌ Ошибка копирования`);
+            showToast(`ОШИБКА КОПИРОВАНИЯ`, 'error');
         }
     }
     if (ipElement) {
@@ -907,7 +1018,7 @@
         ipElement.style.cursor = 'pointer';
     }
 
-    // Мониторинг сервера
+    // ========== МОНИТОРИНГ СЕРВЕРА ==========
     let currentPlayers = 0, currentPlayerList = [], currentVersion = "", isOnline = false;
     const onlineValueEl = document.getElementById('onlineValue');
     const onlineSubEl = document.getElementById('onlineSub');
@@ -917,7 +1028,7 @@
     const playersListEl = document.getElementById('playersList');
     const onlineCard = document.getElementById('onlineCard');
     
-    function updateUI() {
+    function updateServerUI() {
         if (isOnline) {
             onlineValueEl.innerHTML = `<span class="online-dot"></span>${currentPlayers}`;
             onlineSubEl.textContent = currentPlayers === 1 ? "ИГРОК ОНЛАЙН" : "ИГРОКОВ ОНЛАЙН";
@@ -934,7 +1045,7 @@
     
     function togglePlayersList() {
         if (!isOnline || currentPlayers === 0) {
-            showToast("❌ НА СЕРВЕРЕ НИКОГО НЕТ");
+            showToast("НА СЕРВЕРЕ НИКОГО НЕТ", 'error');
             return;
         }
         if (playersContainer.style.display === 'none') {
@@ -969,23 +1080,44 @@
             } else {
                 isOnline = false;
             }
-            updateUI();
+            updateServerUI();
         } catch (error) {
             isOnline = false;
-            updateUI();
+            updateServerUI();
         }
     }
     
     fetchServerStatus();
     setInterval(fetchServerStatus, 45000);
 
-    // Анимация загрузки
+    // ========== ЗАГРУЗКА ==========
     const loadingScreen = document.getElementById('loadingScreen');
     const mainContent = document.getElementById('mainContent');
+    const loadingBar = document.getElementById('loadingBar');
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+            setTimeout(() => {
+                loadingScreen.classList.add('hide');
+                mainContent.classList.add('visible');
+            }, 300);
+        }
+        loadingBar.style.width = Math.min(progress, 100) + '%';
+    }, 150);
+    
     setTimeout(() => {
-        loadingScreen.classList.add('hide');
-        mainContent.classList.add('visible');
-    }, 1500);
+        if (progress < 100) {
+            clearInterval(interval);
+            loadingBar.style.width = '100%';
+            setTimeout(() => {
+                loadingScreen.classList.add('hide');
+                mainContent.classList.add('visible');
+            }, 300);
+        }
+    }, 3000);
 </script>
 </body>
 </html>
